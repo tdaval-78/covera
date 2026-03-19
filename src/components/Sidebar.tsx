@@ -68,8 +68,8 @@ export default function Sidebar({ activeTab, onTabChange, theme, onToggleTheme }
 
       {/* User */}
       {user && (
-        <div style={{ marginTop: 16, padding: 12, background: 'var(--bg-subtle)', borderRadius: 14, border: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+        <div style={{ marginTop: 16, padding: 12, background: 'var(--bg-subtle)', borderRadius: 14, border: '1px solid var(--border)', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
             <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
               {initials}
             </div>
@@ -85,8 +85,8 @@ export default function Sidebar({ activeTab, onTabChange, theme, onToggleTheme }
               background: 'transparent', color: 'var(--text-secondary)', border: 'none', cursor: 'pointer',
               fontSize: 12, fontWeight: 500, transition: 'background 0.15s',
             }}
-            onMouseEnter={e => ((e.target as HTMLElement).style.background = 'var(--bg-card-hover)')}
-            onMouseLeave={e => ((e.target as HTMLElement).style.background = 'transparent')}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = 'var(--bg-card-hover)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = 'transparent')}
           >
             <LogOut size={14} />
             Déconnexion
