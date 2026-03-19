@@ -260,7 +260,7 @@ export default function RegisterPage() {
               style={{
                 padding: '15px 24px',
                 background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)',
-                boxShadow: '0 4px 14px rgba(91,76,245,0.35)',
+                boxShadow: '0 2px 8px rgba(91,76,245,0.3), 0 0 0 1px rgba(91,76,245,0.1)',
               }}
               onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 6px 20px rgba(91,76,245,0.45)')}
               onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 14px rgba(91,76,245,0.35)')}
@@ -283,7 +283,7 @@ export default function RegisterPage() {
 
           <div className="flex items-center gap-4 my-7">
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-            <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Déjà un compte ?</span>
+            <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Déjà un compte ?</span>
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
           </div>
 

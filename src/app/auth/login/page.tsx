@@ -102,7 +102,7 @@ export default function LoginPage() {
           </div>
 
           {/* Testimonials */}
-          <div className="space-y-3">
+          <div className="space-y-3 overflow-hidden">
             {[
               {
                 quote: "Je ne savais même pas que mon téléphone était assuré pour le vol. Covera m'a permis de découvrir des garanties que je payais sans le savoir.",
@@ -122,9 +122,10 @@ export default function LoginPage() {
                   background: 'rgba(255,255,255,0.12)',
                   backdropFilter: 'blur(20px)',
                   border: '1px solid rgba(255,255,255,0.15)',
+                  overflow: 'hidden',
                 }}
               >
-                <p className="text-white/90 text-sm leading-relaxed mb-3" style={{ wordBreak: 'break-word' }}>
+                <p className="text-white/90 text-sm leading-relaxed mb-3" style={{ wordBreak: 'break-word', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   &ldquo;{quote}&rdquo;
                 </p>
                 <div className="flex items-center gap-2.5">
@@ -136,7 +137,7 @@ export default function LoginPage() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-white text-xs font-semibold">{author}</p>
-                    <p className="text-white/55 text-xs">{role}</p>
+                    <p className="text-white/60 text-xs">{role}</p>
                   </div>
                 </div>
               </div>
@@ -145,14 +146,14 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <div className="relative z-10 flex items-center justify-between mt-8">
-          <p className="text-white/50 text-xs">© 2026 Covera · données chiffrées</p>
-          <div className="flex items-center gap-1.5 text-white/50 text-xs">
+        <div className="relative z-10 flex items-center justify-between mt-8 gap-4">
+          <p className="text-white/55 text-xs flex-shrink-0">© 2026 Covera · données chiffrées</p>
+          <div className="flex items-center gap-1.5 text-white/55 text-xs flex-shrink-0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            Chiffrement de bout en bout
+            Chiffrement bout en bout
           </div>
         </div>
       </div>
@@ -257,10 +258,10 @@ export default function LoginPage() {
               style={{
                 padding: '15px 24px',
                 background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)',
-                boxShadow: '0 4px 14px rgba(91,76,245,0.35)',
+                boxShadow: '0 2px 8px rgba(91,76,245,0.3), 0 0 0 1px rgba(91,76,245,0.1)',
               }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 6px 20px rgba(91,76,245,0.45)')}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 14px rgba(91,76,245,0.35)')}
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,76,245,0.4), 0 0 0 1px rgba(91,76,245,0.15)')}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 2px 8px rgba(91,76,245,0.3), 0 0 0 1px rgba(91,76,245,0.1)')}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -274,7 +275,7 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="flex items-center gap-4 my-7">
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-            <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Pas encore de compte ?</span>
+            <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Pas encore de compte ?</span>
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
           </div>
 
