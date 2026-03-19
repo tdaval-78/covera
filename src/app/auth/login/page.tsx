@@ -141,7 +141,7 @@ export default function LoginPage() {
           {/* Heading */}
           <div style={{ marginBottom: '32px' }}>
             <h1 style={{ fontSize: '30px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '8px' }}>Bon retour 👋</h1>
-            <p style={{ fontSize: '15px', color: '#64748B' }}>Connectez-vous pour accéder à vos assurances.</p>
+            <p style={{ fontSize: '15px', color: '#475569' }}>Connectez-vous pour accéder à vos assurances.</p>
           </div>
 
           {/* Error */}

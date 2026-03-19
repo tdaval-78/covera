@@ -44,7 +44,7 @@ export default function RegisterPage() {
             <CheckCircle size={40} color="#10B981" />
           </div>
           <h2 style={{ fontSize: '30px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '12px' }}>Compte créé !</h2>
-          <p style={{ fontSize: '15px', color: '#64748B', marginBottom: '8px' }}>Nous avons envoyé un email de confirmation à</p>
+          <p style={{ fontSize: '15px', color: '#475569', marginBottom: '8px' }}>Nous avons envoyé un email de confirmation à</p>
           <p style={{ fontSize: '15px', fontWeight: 600, color: '#0F172A', marginBottom: '24px' }}>{email}</p>
           <p style={{ fontSize: '14px', color: '#94A3B8', marginBottom: '32px' }}>Cliquez sur le lien dans l&apos;email pour activer votre compte. Pensez à vérifier vos spams.</p>
           <Link href="/auth/login" style={{ display: 'block', width: '100%', padding: '15px 24px', borderRadius: '12px', background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', color: 'white', fontSize: '15px', fontWeight: 600, textAlign: 'center', textDecoration: 'none', boxShadow: '0 2px 8px rgba(91,76,245,0.25)' }}>Se connecter →</Link>
@@ -133,7 +133,7 @@ export default function RegisterPage() {
         <div style={{ width: '100%', maxWidth: '400px' }}>
           <div style={{ marginBottom: '32px' }}>
             <h1 style={{ fontSize: '30px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '8px' }}>Créer un compte ✨</h1>
-            <p style={{ fontSize: '15px', color: '#64748B' }}>Gratuit · sans carte bancaire · 30 secondes.</p>
+            <p style={{ fontSize: '15px', color: '#475569' }}>Gratuit · sans carte bancaire · 30 secondes.</p>
           </div>
 
           {error && (
@@ -145,7 +145,7 @@ export default function RegisterPage() {
 
           <form onSubmit={doRegister} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Nom complet</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Nom complet</label>
               <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Thomas Dupont" required autoComplete="name"
                 style={{ width: '100%', padding: '14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
                 onFocus={e => (e.target.style.borderColor = '#5B4CF5')}
@@ -153,7 +153,7 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Email</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="vous@exemple.com" required autoComplete="email"
                 style={{ width: '100%', padding: '14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
                 onFocus={e => (e.target.style.borderColor = '#5B4CF5')}
@@ -161,7 +161,7 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Mot de passe</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Mot de passe</label>
               <div style={{ position: 'relative' }}>
                 <input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Minimum 6 caractères" required autoComplete="new-password"
                   style={{ width: '100%', padding: '14px 48px 14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
@@ -200,7 +200,7 @@ export default function RegisterPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '28px 0' }}>
             <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.06)' }} />
-            <span style={{ fontSize: '12px', fontWeight: 500, color: '#64748B', whiteSpace: 'nowrap' }}>Déjà un compte ?</span>
+            <span style={{ fontSize: '12px', fontWeight: 500, color: '#475569', whiteSpace: 'nowrap' }}>Déjà un compte ?</span>
             <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.06)' }} />
           </div>
 
