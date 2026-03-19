@@ -118,7 +118,7 @@ export default function SituationTab({
 
   if (contracts.length === 0) {
     return (
-      <div className="p-5 md:p-8">
+      <div className="p-5 md:p-8 max-w-lg mx-auto">
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
             Bonjour 👋
@@ -129,27 +129,45 @@ export default function SituationTab({
         </div>
 
         <div
-          className="rounded-2xl p-6 mt-6 mb-6"
-          style={{ background: 'linear-gradient(135deg, #5B4CF5 0%, #7C5CF5 100%)', boxShadow: '0 8px 32px rgba(91,76,245,0.25)' }}
+          className="rounded-2xl p-6 mb-6"
+          style={{
+            background: 'linear-gradient(160deg, #4A3EE0 0%, #5B4CF5 40%, #7C5CF5 100%)',
+            boxShadow: '0 8px 32px rgba(91,76,245,0.25)',
+            color: 'white',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
         >
-          <div className="flex items-center gap-2 mb-3">
-            <Shield size={18} className="opacity-80" />
-            <span className="text-xs font-semibold uppercase tracking-wider opacity-80">Covera</span>
+          {/* Decorative orbs */}
+          <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%)' }} />
+          <div className="absolute -bottom-12 -left-8 w-36 h-36 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%)' }} />
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-3">
+              <Shield size={18} className="opacity-80" />
+              <span className="text-xs font-semibold uppercase tracking-wider opacity-80">Covera</span>
+            </div>
+            <h2 className="text-xl font-bold mb-1">Clarifiez vos assurances</h2>
+            <p className="text-sm opacity-80 leading-relaxed mb-5">
+              Importez vos contrats, comprenez ce qui est couvert, et posez vos questions à l&apos;IA.
+            </p>
+            {onAddContract && (
+              <button
+                onClick={onAddContract}
+                className="flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all"
+                style={{
+                  background: 'rgba(255,255,255,0.22)',
+                  backdropFilter: 'blur(8px)',
+                  color: 'white',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }}
+              >
+                <Plus size={16} />
+                Ajouter mon premier contrat
+              </button>
+            )}
           </div>
-          <h2 className="text-xl font-bold mb-1">Clarifiez vos assurances</h2>
-          <p className="text-sm opacity-80 leading-relaxed mb-5">
-            Importez vos contrats, comprenez ce qui est couvert, et posez vos questions à l&apos;IA.
-          </p>
-          {onAddContract && (
-            <button
-              onClick={onAddContract}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all"
-              style={{ background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)', color: 'white', border: '1px solid rgba(255,255,255,0.25)' }}
-            >
-              <Plus size={16} />
-              Ajouter mon premier contrat
-            </button>
-          )}
         </div>
 
         <div className="grid grid-cols-3 gap-3">

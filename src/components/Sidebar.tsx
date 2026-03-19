@@ -127,10 +127,6 @@ export default function Sidebar({
             </button>
           </div>
         )}
-
-        <p className="text-center text-xs mt-3" style={{ color: 'var(--text-tertiary)' }}>
-          Covera · v0.3
-        </p>
       </div>
     </aside>
   );

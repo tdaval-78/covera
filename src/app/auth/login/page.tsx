@@ -25,101 +25,118 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#FAFBFD' }}>
+    <div className="min-h-screen flex" style={{ background: '#F0F1FB' }}>
       {/* ─── LEFT: Branding panel ─── */}
       <div
-        className="hidden lg:flex flex-col p-10 xl:p-14 relative overflow-hidden"
+        className="hidden lg:flex flex-col relative overflow-hidden"
         style={{
-          background: 'linear-gradient(155deg, #5B4CF5 0%, #6F58F0 25%, #7C5CF5 50%, #9B6CF5 100%)',
-          width: 'clamp(360px, 42vw, 520px)',
-          minWidth: '360px',
-          maxWidth: '520px',
+          background: 'linear-gradient(160deg, #4A3EE0 0%, #5B4CF5 35%, #7C5CF5 65%, #9B6CF5 100%)',
+          width: 'clamp(380px, 44vw, 560px)',
+          minWidth: '380px',
           flexShrink: 0,
+          padding: 'clamp(32px, 4vw, 56px)',
         }}
       >
-        {/* Subtle pattern overlay */}
+        {/* Subtle dot pattern */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.035]"
           style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, white 1px, transparent 1px), radial-gradient(circle at 75% 75%, white 1px, transparent 1px)`,
-            backgroundSize: '32px 32px',
+            backgroundImage: `radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 80%, white 1px, transparent 1px)`,
+            backgroundSize: '28px 28px',
           }}
         />
 
-        {/* Glowing orb decorations */}
+        {/* Orb decorations */}
         <div
-          className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-20"
-          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)' }}
+          className="absolute -top-24 -right-24 w-96 h-96 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 65%)' }}
         />
         <div
-          className="absolute -bottom-24 -left-10 w-60 h-60 rounded-full opacity-15"
-          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)' }}
+          className="absolute -bottom-20 -left-16 w-72 h-72 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 65%)' }}
         />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
           <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center"
-            style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(12px)' }}
+            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)' }}
           >
             <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
               <path d="M16 4L24 9V18C24 25 16 29 16 29C16 29 8 25 8 18V9L16 4Z" fill="white" opacity="0.95"/>
               <path d="M13 16L15.5 18.5L20 13" stroke="#5B4CF5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
-          <span className="text-xl font-bold text-white tracking-tight">Covera</span>
+          <div>
+            <span className="text-xl font-bold text-white tracking-tight">Covera</span>
+            <p className="text-white/60 text-xs mt-0.5">Tes assurances clarifiées</p>
+          </div>
         </div>
 
-        {/* Main headline */}
-        <div className="relative z-10 flex-1 flex flex-col justify-center">
-          <h2 className="text-[2.1rem] xl:text-[2.5rem] font-extrabold text-white leading-[1.15] tracking-tight mb-4">
+        {/* Main content */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center mt-8">
+          <h2 className="text-white font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', letterSpacing: '-0.03em' }}>
             Vos assurances,<br />crystal clear.
           </h2>
-          <p className="text-white/65 text-base xl:text-lg leading-relaxed mb-10 max-w-sm">
+          <p className="text-white/75 text-base leading-relaxed mb-10 max-w-sm">
             Importez vos contrats, comprenez exactement ce qui est couvert, et posez vos questions à l&apos;IA. En 30 secondes.
           </p>
 
           {/* Social proof */}
-          <div className="flex items-center gap-3 mb-8 overflow-hidden">
+          <div className="flex items-center gap-3 mb-8">
             <div className="flex -space-x-2 flex-shrink-0">
-              {['EM', 'ML', 'AC', 'JR'].map(initial => (
+              {['EM', 'ML', 'AC', 'JR'].map((initial, i) => (
                 <div
                   key={initial}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white/20"
-                  style={{ background: `hsl(${(initial.charCodeAt(0) * 47) % 360}, 60%, 65%)` }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white/30"
+                  style={{ background: `hsl(${(initial.charCodeAt(0) * 47 + i * 30) % 360}, 55%, 60%)`, zIndex: 4 - i }}
                 >
                   {initial}
                 </div>
               ))}
             </div>
-            <div className="min-w-0 overflow-hidden">
+            <div className="min-w-0">
               <p className="text-white font-semibold text-sm">+2 400 utilisateurs</p>
-              <p className="text-white/55 text-xs truncate">contrats analysés ce mois</p>
+              <p className="text-white/65 text-xs">contrats analysés ce mois</p>
             </div>
           </div>
 
           {/* Testimonials */}
-          <div className="space-y-3 overflow-hidden">
+          <div className="space-y-3">
             {[
-              { quote: "Je ne savais même pas que mon téléphone était assuré pour le vol. Covera m'a permis de découvrir des garanties que je payais sans le savoir.", author: 'Sophie M.', role: 'Utilisatrice Covera depuis 3 mois' },
-              { quote: "Quand j'ai eu un sinistre, j'ai pu répondre à l'assureur en connaissant exactement mes droits. Ça m'a économisé 400€.", author: 'Thomas L.', role: 'Utilisateur Covera depuis 6 mois' },
+              {
+                quote: "Je ne savais même pas que mon téléphone était assuré pour le vol. Covera m'a permis de découvrir des garanties que je payais sans le savoir.",
+                author: 'Sophie M.',
+                role: 'Utilisatrice Covera depuis 3 mois',
+              },
+              {
+                quote: "Quand j'ai eu un sinistre, j'ai pu répondre à l'assureur en connaissant exactement mes droits. Ça m'a économisé 400€.",
+                author: 'Thomas L.',
+                role: 'Utilisateur Covera depuis 6 mois',
+              },
             ].map(({ quote, author, role }) => (
               <div
                 key={author}
-                className="p-4 rounded-xl w-full"
-                style={{ background: 'rgba(255,255,255,0.11)', backdropFilter: 'blur(16px)', maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                className="rounded-2xl p-4"
+                style={{
+                  background: 'rgba(255,255,255,0.12)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                }}
               >
-                <p className="text-white/90 text-sm leading-relaxed mb-2" style={{ wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%' }}>&ldquo;{quote}&rdquo;</p>
-                <div className="flex items-center gap-2">
+                <p className="text-white/90 text-sm leading-relaxed mb-3" style={{ wordBreak: 'break-word' }}>
+                  &ldquo;{quote}&rdquo;
+                </p>
+                <div className="flex items-center gap-2.5">
                   <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                     style={{ background: 'rgba(255,255,255,0.2)' }}
                   >
                     {author.charAt(0)}
                   </div>
                   <div className="min-w-0">
                     <p className="text-white text-xs font-semibold">{author}</p>
-                    <p className="text-white/45 text-xs truncate">{role}</p>
+                    <p className="text-white/55 text-xs">{role}</p>
                   </div>
                 </div>
               </div>
@@ -128,7 +145,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <div className="relative z-10 flex items-center justify-between">
+        <div className="relative z-10 flex items-center justify-between mt-8">
           <p className="text-white/50 text-xs">© 2026 Covera · données chiffrées</p>
           <div className="flex items-center gap-1.5 text-white/50 text-xs">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -141,7 +158,10 @@ export default function LoginPage() {
       </div>
 
       {/* ─── RIGHT: Form ─── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 xl:p-16">
+      <div
+        className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 xl:p-16"
+        style={{ minHeight: '100vh' }}
+      >
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2.5 mb-10">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', boxShadow: '0 4px 16px rgba(91,76,245,0.3)' }}>
@@ -153,7 +173,7 @@ export default function LoginPage() {
           <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Covera</span>
         </div>
 
-        <div className="w-full max-w-sm">
+        <div className="w-full" style={{ maxWidth: '400px' }}>
           <div className="mb-8">
             <h1 className="text-3xl font-extrabold tracking-tight mb-2" style={{ color: 'var(--text-primary)' }}>
               Bon retour 👋
@@ -178,11 +198,9 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
             <div>
-              <label
-                className="block text-xs font-bold uppercase tracking-widest mb-2"
-                style={{ color: 'var(--text-secondary)' }}
-              >
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-secondary)' }}>
                 Adresse email
               </label>
               <input
@@ -196,12 +214,10 @@ export default function LoginPage() {
               />
             </div>
 
+            {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label
-                  className="text-xs font-bold uppercase tracking-widest"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
+                <label className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>
                   Mot de passe
                 </label>
                 <Link
@@ -233,16 +249,18 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl font-semibold text-white text-base py-3.5 transition-all mt-1"
+              className="w-full rounded-xl font-semibold text-white text-base transition-all mt-2"
               style={{
+                padding: '15px 24px',
                 background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)',
-                boxShadow: '0 4px 20px rgba(91,76,245,0.35)',
+                boxShadow: '0 4px 14px rgba(91,76,245,0.35)',
               }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 6px 28px rgba(91,76,245,0.45)')}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 20px rgba(91,76,245,0.35)')}
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 6px 20px rgba(91,76,245,0.45)')}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 14px rgba(91,76,245,0.35)')}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -254,18 +272,19 @@ export default function LoginPage() {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-8">
+          <div className="flex items-center gap-4 my-7">
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-            <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-              pas encore de compte ?
-            </span>
+            <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Pas encore de compte ?</span>
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
           </div>
 
+          {/* Register */}
           <Link
             href="/auth/register"
-            className="block w-full text-center py-3.5 rounded-xl font-semibold text-base transition-all"
+            className="block w-full text-center font-semibold text-base transition-all"
             style={{
+              padding: '15px 24px',
+              borderRadius: '12px',
               background: 'var(--bg-subtle)',
               color: 'var(--text-primary)',
               border: '1.5px solid var(--border)',
