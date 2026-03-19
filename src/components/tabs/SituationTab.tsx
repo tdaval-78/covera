@@ -125,13 +125,13 @@ export default function SituationTab({ contracts, onSelectContract, onAddContrac
                   onClick={onAddContract}
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 20px',
-                    borderRadius: 14, background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(12px)',
-                    color: 'white', fontWeight: 700, fontSize: 14, border: '1px solid rgba(255,255,255,0.3)',
-                    cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-                    transition: 'all 0.2s',
+                    borderRadius: 14, background: 'white', backdropFilter: 'blur(12px)',
+                    color: '#5B4CF5', fontWeight: 700, fontSize: 14, border: 'none',
+                    cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                    transition: 'all 0.2s cubic-bezier(0.22,1,0.36,1)',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.32)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.22)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#F8F8FF'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.25)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'white'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(0,0,0,0.2)'; }}
                 >
                   <Plus size={16} />
                   Ajouter mon premier contrat
@@ -143,22 +143,24 @@ export default function SituationTab({ contracts, onSelectContract, onAddContrac
           {/* Feature cards */}
           <div className="anim-up-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
             {[
-              { icon: '📄', label: 'Upload', desc: 'PDF, photo' },
-              { icon: '🧠', label: 'IA', desc: 'Analyse auto' },
-              { icon: '💬', label: 'Chat', desc: 'Questions' },
-            ].map(({ icon, label, desc }) => (
+              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>, label: 'Upload', desc: 'PDF, photo' },
+              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>, label: 'IA', desc: 'Analyse auto' },
+              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, label: 'Chat', desc: 'Questions' },
+            ].map(({ icon, label, desc }, idx) => (
               <div key={label} style={{
                 padding: 18, borderRadius: 18, background: 'var(--bg-card)',
                 border: '1px solid var(--border)', textAlign: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
+                transition: 'transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s',
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)'; }}
               >
-                <p style={{ fontSize: 26, margin: '0 0 8px' }}>{icon}</p>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--brand-light)', color: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', boxShadow: '0 2px 8px rgba(91,76,245,0.15)' }}>
+                  {icon}
+                </div>
                 <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 2px' }}>{label}</p>
-                <p style={{ fontSize: 11, color: 'var(--text-tertiary)', margin: 0 }}>{desc}</p>
+                <p style={{ fontSize: 11, color: '#64748B', margin: 0 }}>{desc}</p>
               </div>
             ))}
           </div>
