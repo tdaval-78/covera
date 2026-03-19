@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, User, Mail, Calendar, AlertCircle, CheckCircle } from 'lucide-react';
+import { LogOut, Mail, Calendar, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function AccountPage() {
-  const { user, session, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -18,8 +18,8 @@ export default function AccountPage() {
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center h-full p-8">
-        <p className="text-gray-500">Redirection...</p>
+      <div className="p-5 md:p-8 flex items-center justify-center min-h-[50vh]">
+        <div className="spinner-dark" />
       </div>
     );
   }
@@ -28,81 +28,73 @@ export default function AccountPage() {
     ? new Date(user.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
     : '—';
 
+  const initials = user.user_metadata?.full_name
+    ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+    : user.email?.[0]?.toUpperCase() || '?';
+
   return (
-    <div className="p-8 max-w-2xl mx-auto stagger">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon compte</h1>
-      <p className="text-gray-500 mb-8">Gérez vos informations personnelles</p>
+    <div className="p-5 md:p-8 max-w-lg mx-auto">
+      <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-6" style={{ color: 'var(--text-primary)' }}>Mon compte</h1>
 
       {/* Profile card */}
-      <div className="glass rounded-2xl p-6 mb-6 animate-fade-in">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg" style={{boxShadow:'0 4px 16px rgba(99,102,241,0.3)'}}>
-            {user.user_metadata?.full_name
-              ? user.user_metadata.full_name.charAt(0).toUpperCase()
-              : user.email?.charAt(0).toUpperCase() || '?'}
+      <div className="card p-6 mb-5">
+        <div className="flex items-center gap-4 mb-5">
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', boxShadow: '0 4px 16px rgba(91,76,245,0.3)' }}
+          >
+            {initials}
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl md:text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
               {user.user_metadata?.full_name || 'Utilisateur'}
             </h2>
-            <p className="text-gray-500 text-sm">
+            <div className="flex items-center gap-1.5 mt-1">
               {user.email_confirmed_at ? (
-                <span className="flex items-center gap-1 text-green-600">
-                  <CheckCircle size={14} /> Email confirmé
+                <span className="flex items-center gap-1 text-xs font-semibold" style={{ color: 'var(--emerald)' }}>
+                  <CheckCircle size={14} />
+                  Email confirmé
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-yellow-600">
-                  <AlertCircle size={14} /> Email non confirmé
+                <span className="flex items-center gap-1 text-xs font-semibold" style={{ color: 'var(--amber)' }}>
+                  <AlertCircle size={14} />
+                  Email non confirmé
                 </span>
               )}
-            </p>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 p-4 bg-white/50 rounded-xl">
-            <Mail size={20} className="text-indigo-500" />
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 p-4 rounded-xl" style={{ background: 'var(--bg-subtle)' }}>
+            <Mail size={18} style={{ color: 'var(--brand)' }} />
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Email</p>
-              <p className="font-medium text-gray-900">{user.email}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-0.5">Email</p>
+              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{user.email}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-4 bg-white/50 rounded-xl">
-            <Calendar size={20} className="text-indigo-500" />
+          <div className="flex items-center gap-3 p-4 rounded-xl" style={{ background: 'var(--bg-subtle)' }}>
+            <Calendar size={18} style={{ color: 'var(--brand)' }} />
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Membre depuis</p>
-              <p className="font-medium text-gray-900">{createdDate}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-4 bg-white/50 rounded-xl">
-            <User size={20} className="text-indigo-500" />
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">ID utilisateur</p>
-              <p className="font-medium text-gray-900 text-sm font-mono">{user.id}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-0.5">Membre depuis</p>
+              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{createdDate}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Danger zone */}
-      <div className="glass rounded-2xl p-6 animate-fade-in">
-        <h3 className="font-semibold text-gray-900 mb-4">Déconnexion</h3>
-        <p className="text-sm text-gray-500 mb-4">
-          Vous &ecirc;tes actuellement connect&eacute;(e) avec <strong>{user.email}</strong>.
-        </p>
-        <button
-          onClick={handleSignOut}
-          disabled={loading}
-          className="btn-secondary px-6 py-3 rounded-xl font-medium flex items-center gap-2"
-        >
-          {loading ? (
-            <><div className="spinner !border-indigo-300 !border-t-indigo-600" />
-            Déconnexion...</>
-          ) : (
-            <><LogOut size={18} /> Se déconnecter</>
-          )}
-        </button>
-      </div>
+      {/* Sign out */}
+      <button
+        onClick={handleSignOut}
+        disabled={loading}
+        className="btn btn-ghost btn-lg w-full"
+      >
+        {loading ? (
+          <><div className="spinner !border-gray-300 !border-t-gray-600" /> Déconnexion...</>
+        ) : (
+          <><LogOut size={18} /> Se déconnecter</>
+        )}
+      </button>
     </div>
   );
 }

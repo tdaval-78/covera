@@ -1,7 +1,7 @@
-import { LucideIcon, Package } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 
 export function EmptyState({
-  icon,
+  icon: Icon,
   title,
   description,
   action,
@@ -11,20 +11,18 @@ export function EmptyState({
   description: string;
   action?: { label: string; onClick: () => void };
 }) {
-  const Icon: LucideIcon = icon || Package;
-
   return (
     <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
-      <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center mb-5 shadow-sm">
-        <Icon size={36} className="text-indigo-400" strokeWidth={1.5} />
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
+        style={{ background: 'var(--brand-light)' }}
+      >
+        {Icon && <Icon size={28} style={{ color: 'var(--brand)' }} />}
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-sm text-gray-500 max-w-xs leading-relaxed">{description}</p>
+      <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{title}</h3>
+      <p className="text-sm max-w-xs leading-relaxed">{description}</p>
       {action && (
-        <button
-          onClick={action.onClick}
-          className="btn-primary mt-6 px-6 py-3 rounded-xl font-semibold text-sm"
-        >
+        <button onClick={action.onClick} className="btn btn-brand btn-lg mt-6">
           {action.label}
         </button>
       )}
@@ -36,39 +34,16 @@ export function LoadingSpinner({ size = 24, text = '' }: { size?: number; text?:
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-12">
       <div
-        className="rounded-full border-2 border-indigo-200 border-t-indigo-600"
+        className="rounded-full"
         style={{
           width: size,
           height: size,
-          animation: 'spin 0.7s linear infinite',
+          border: '2px solid rgba(91,76,245,0.2)',
+          borderTopColor: 'var(--brand)',
+          animation: 'spin 0.65s linear infinite',
         }}
       />
-      {text && <p className="text-sm text-gray-400">{text}</p>}
-    </div>
-  );
-}
-
-export function Toast({
-  message,
-  type = 'success',
-  onClose,
-}: {
-  message: string;
-  type?: 'success' | 'error' | 'info';
-  onClose?: () => void;
-}) {
-  const colors = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
-  };
-
-  return (
-    <div className={`toast flex items-center gap-3 px-4 py-3 rounded-xl border ${colors[type]} shadow-lg`}>
-      <p className="text-sm font-medium">{message}</p>
-      {onClose && (
-        <button onClick={onClose} className="ml-auto opacity-60 hover:opacity-100 text-lg leading-none">&times;</button>
-      )}
+      {text && <p className="text-sm">{text}</p>}
     </div>
   );
 }

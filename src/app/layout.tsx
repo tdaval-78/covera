@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   description: "Upload tes contrats d'assurance, comprends exactement ce qui est couvert et pose des questions à l'IA.",
   icons: {
     icon: '/favicon.svg',
+    apple: '/favicon.svg',
   },
 };
 
@@ -24,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${inter.variable} h-full`}>
-      <body className="h-full antialiased">
+      <body className="h-full antialiased bg-[var(--bg-base)]">
         <AuthProvider>
           {children}
         </AuthProvider>

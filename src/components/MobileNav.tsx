@@ -1,15 +1,14 @@
 'use client';
 
-import { Home, Search, MessageCircle, Plus, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Home, Search, MessageCircle, Plus, User } from 'lucide-react';
 
 const tabs = [
-  { id: 'situation', label: 'Accueil', icon: Home, href: '/' },
-  { id: 'details',   label: 'Contrats', icon: Search, href: '/' },
-  { id: 'chat',      label: 'Chat',     icon: MessageCircle, href: '/' },
-  { id: 'add',       label: 'Ajouter',  icon: Plus, href: '/' },
-  { id: 'account',   label: 'Compte',  icon: User, href: '/account' },
+  { id: 'situation', label: 'Accueil', icon: Home },
+  { id: 'details',   label: 'Contrats', icon: Search },
+  { id: 'chat',      label: 'Chat', icon: MessageCircle },
+  { id: 'account',   label: 'Compte', icon: User, href: '/account' },
 ];
 
 export default function MobileNav({
@@ -22,55 +21,42 @@ export default function MobileNav({
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 lg:hidden">
-      <div className="glass border-t border-white/30 backdrop-blur-xl">
-        <div className="flex items-center justify-around py-2 px-1">
-          {tabs.map(tab => {
-            const Icon = tab.icon;
-            const isActive = tab.href === '/account'
-              ? pathname === '/account'
-              : activeTab === tab.id && pathname === '/';
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden" style={{ background: 'var(--bg-card)', borderTop: '1px solid var(--border)', boxShadow: '0 -4px 24px rgba(0,0,0,0.06)' }}>
+      <div className="flex items-center justify-around py-2 px-1 pb-safe">
+        {tabs.map(({ id, label, icon: Icon, href }) => {
+          const isActive = href === '/account'
+            ? pathname === '/account'
+            : activeTab === id && pathname === '/';
 
-            return tab.href === '/account' ? (
-              <Link
-                key={tab.id}
-                href="/account"
-                className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all min-w-[56px] ${
-                  pathname === '/account'
-                    ? 'text-indigo-600'
-                    : 'text-gray-400'
-                }`}
-              >
-                <Icon size={22} strokeWidth={pathname === '/account' ? 2.5 : 2} />
-                <span className={`text-[10px] font-medium ${pathname === '/account' ? 'font-semibold' : ''}`}>
-                  {tab.label}
-                </span>
-              </Link>
-            ) : (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all min-w-[56px] ${
-                  isActive ? 'text-indigo-600' : 'text-gray-400'
-                }`}
-              >
-                {tab.id === 'add' ? (
-                  <div className="w-10 h-10 -mt-4 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg text-white" style={{boxShadow:'0 4px 16px rgba(99,102,241,0.4)'}}>
+          return href === '/account' ? (
+            <Link key={id} href="/account" className={`nav-tab ${isActive ? 'active' : ''}`}>
+              <span className="nav-icon">
+                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+              </span>
+              <span>{label}</span>
+            </Link>
+          ) : (
+            <button
+              key={id}
+              onClick={() => onTabChange(id)}
+              className={`nav-tab ${isActive ? 'active' : ''}`}
+            >
+              <span className="nav-icon">
+                {id === 'add' ? (
+                  <div className="nav-fab">
                     <Plus size={22} strokeWidth={2.5} />
                   </div>
                 ) : (
-                  <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                  <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                 )}
-                <span className={`text-[10px] font-medium ${isActive ? 'font-semibold' : ''}`}>
-                  {tab.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        {/* Safe area for iPhone notch */}
-        <div className="h-[env(safe-area-inset-bottom)]" />
+              </span>
+              {id !== 'add' && <span>{label}</span>}
+            </button>
+          );
+        })}
       </div>
+      {/* iOS safe area */}
+      <div style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} />
     </nav>
   );
 }

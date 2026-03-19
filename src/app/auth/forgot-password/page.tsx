@@ -17,90 +17,67 @@ export default function ForgotPasswordPage() {
     setError('');
     setLoading(true);
     const { error } = await resetPassword(email);
-    if (error) {
-      setError(error);
-      setLoading(false);
-    } else {
-      setSuccess(true);
-      setLoading(false);
-    }
+    if (error) { setError(error); setLoading(false); }
+    else { setSuccess(true); setLoading(false); }
   };
 
   if (success) {
     return (
-      <div className="auth-bg min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-md text-center animate-fade-in-scale">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
-            <CheckCircle size={32} className="text-green-600" />
+      <div className="auth-bg p-4">
+        <div className="w-full max-w-sm text-center">
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center" style={{ background: 'var(--emerald-light)' }}>
+            <CheckCircle size={32} style={{ color: 'var(--emerald)' }} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Email envoyé !</h2>
-          <p className="text-gray-500 mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-2" style={{ color: 'var(--text-primary)' }}>Email envoyé !</h2>
+          <p className="text-sm mb-6">
             Un lien de réinitialisation a été envoyé à <strong>{email}</strong>.<br />
             Vérifiez votre boîte de réception.
           </p>
-          <Link href="/auth/login" className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold">
-            Retour à la connexion
-          </Link>
+          <Link href="/auth/login" className="btn btn-brand btn-lg">Retour à la connexion</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="auth-bg min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-4 shadow-lg" style={{boxShadow:'0 8px 24px rgba(99,102,241,0.3)'}}>
-            <span className="text-white text-2xl font-bold">C</span>
+    <div className="auth-bg p-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', boxShadow: '0 4px 16px rgba(91,76,245,0.3)' }}>
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+              <path d="M16 4L24 9V18C24 25 16 29 16 29C16 29 8 25 8 18V9L16 4Z" fill="white" opacity="0.95"/>
+              <path d="M13 16L15.5 18.5L20 13" stroke="#5B4CF5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
-          <h1 className="text-3xl font-bold gradient-text">Covera</h1>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Covera</h1>
         </div>
 
-        <div className="glass rounded-3xl p-8 animate-fade-in-scale">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Mot de passe oublié ?</h2>
-          <p className="text-gray-500 text-sm mb-6">
-            Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
-          </p>
+        <div className="card p-6">
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight mb-2" style={{ color: 'var(--text-primary)' }}>Mot de passe oublié ?</h2>
+          <p className="text-sm mb-5">Entrez votre email et nous vous enverrons un lien de réinitialisation.</p>
 
           {error && (
-            <div className="flex items-center gap-3 p-4 mb-4 bg-red-50 border border-red-100 rounded-xl text-red-700 text-sm">
-              <AlertCircle size={18} className="flex-shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 mb-4 rounded-xl text-sm" style={{ background: 'var(--rose-light)', color: 'var(--rose-text)' }}>
+              <AlertCircle size={16} className="flex-shrink-0" />
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="vous@exemple.com"
-                required
-                className="w-full glass-input px-4 py-3 rounded-xl text-gray-900 placeholder:text-gray-400"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full btn-primary py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <><div className="spinner" /> Envoi...</>
-              ) : (
-                'Envoyer le lien'
-              )}
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+              placeholder="vous@exemple.com" required className="input" />
+            <button type="submit" disabled={loading} className="btn btn-brand btn-lg w-full">
+              {loading ? <><div className="spinner" /> Envoi...</> : 'Envoyer le lien'}
             </button>
           </form>
-
-          <p className="text-center text-sm text-gray-500 mt-6">
-            <Link href="/auth/login" className="text-indigo-500 hover:text-indigo-700 font-semibold">
-              Retour à la connexion
-            </Link>
-          </p>
         </div>
+
+        <p className="text-center text-sm mt-5">
+          <Link href="/auth/login" className="font-semibold" style={{ color: 'var(--brand)' }}>
+            Retour à la connexion
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -20,32 +20,37 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     const { error } = await signIn(email, password);
-    if (error) {
-      setError(error);
-      setLoading(false);
-    } else {
-      router.push('/');
-    }
+    if (error) { setError(error); setLoading(false); }
+    else router.push('/');
   };
 
   return (
-    <div className="auth-bg min-h-screen flex items-center justify-center p-4">
+    <div className="auth-bg p-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-4 shadow-lg" style={{boxShadow:'0 8px 24px rgba(99,102,241,0.3)'}}>
-            <span className="text-white text-2xl font-bold">C</span>
+        <div className="text-center mb-8">
+          <div
+            className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', boxShadow: '0 4px 16px rgba(91,76,245,0.3)' }}
+          >
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+              <path d="M16 4L24 9V18C24 25 16 29 16 29C16 29 8 25 8 18V9L16 4Z" fill="white" opacity="0.95"/>
+              <path d="M13 16L15.5 18.5L20 13" stroke="#5B4CF5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
-          <h1 className="text-2xl font-bold gradient-text">Covera</h1>
-          <p className="text-gray-500 text-sm mt-1">Tes assurances, clarifiées.</p>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Covera</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>Tes assurances clarifiées</p>
         </div>
 
         {/* Card */}
-        <div className="glass rounded-2xl md:rounded-3xl p-6 md:p-8 animate-fade-in-scale">
-          <h2 className="text-lg font-semibold text-gray-900 mb-5">Se connecter</h2>
+        <div className="card p-6">
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight mb-5" style={{ color: 'var(--text-primary)' }}>Se connecter</h2>
 
           {error && (
-            <div className="flex items-center gap-2.5 p-3.5 mb-4 bg-red-50 border border-red-100 rounded-xl text-red-700 text-sm">
+            <div
+              className="flex items-center gap-2.5 p-3.5 mb-4 rounded-xl text-sm"
+              style={{ background: 'var(--rose-light)', color: 'var(--rose-text)' }}
+            >
               <AlertCircle size={16} className="flex-shrink-0" />
               {error}
             </div>
@@ -53,22 +58,22 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label className="text-xs font-semibold uppercase tracking-wider mb-1.5 block">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="vous@exemple.com"
                 required
-                className="w-full glass-input px-4 py-3 rounded-xl text-gray-900 placeholder:text-gray-400 text-base"
+                className="input"
                 autoComplete="email"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-medium text-gray-700">Mot de passe</label>
-                <Link href="/auth/forgot-password" className="text-xs text-indigo-500 hover:text-indigo-700 font-medium">
+                <label className="text-xs font-semibold uppercase tracking-wider">Mot de passe</label>
+                <Link href="/auth/forgot-password" className="text-xs font-semibold" style={{ color: 'var(--brand)' }}>
                   Oublié ?
                 </Link>
               </div>
@@ -79,39 +84,32 @@ export default function LoginPage() {
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full glass-input px-4 py-3 rounded-xl text-gray-900 pr-12 placeholder:text-gray-400 text-base"
+                  className="input pr-11"
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-tertiary)' }}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full btn-primary py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 mt-5"
-            >
-              {loading ? (
-                <><div className="spinner" /> Connexion...</>
-              ) : (
-                'Se connecter'
-              )}
+            <button type="submit" disabled={loading} className="btn btn-brand btn-lg w-full mt-2">
+              {loading ? <><div className="spinner" /> Connexion...</> : 'Se connecter'}
             </button>
           </form>
-
-          <p className="text-center text-sm text-gray-500 mt-5">
-            Pas de compte ?{' '}
-            <Link href="/auth/register" className="text-indigo-500 hover:text-indigo-700 font-semibold">
-              Créer un compte
-            </Link>
-          </p>
         </div>
+
+        <p className="text-center text-sm mt-5" style={{ color: 'var(--text-secondary)' }}>
+          Pas de compte ?{' '}
+          <Link href="/auth/register" className="font-semibold" style={{ color: 'var(--brand)' }}>
+            Créer un compte
+          </Link>
+        </p>
       </div>
     </div>
   );

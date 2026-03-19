@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, AlertCircle, CheckCircle, Shield, Calendar, CreditCard, ChevronRight, X } from 'lucide-react';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { FileText, AlertCircle, CheckCircle, Shield, Calendar, CreditCard, ChevronRight, X, Info } from 'lucide-react';
 import type { InsuranceContract } from '@/types';
 
 export default function DetailsTab({
@@ -15,58 +14,59 @@ export default function DetailsTab({
   onSelectContract: (c: InsuranceContract) => void;
 }) {
   const active = selectedContract || contracts[0];
-  const [mobileContractOpen, setMobileContractOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   if (contracts.length === 0) {
     return (
-      <div className="p-4 md:p-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Contrats</h1>
-        <p className="text-gray-500 mb-6 text-sm md:text-base">Explorez vos contrats en détail</p>
-        <EmptyState
-          icon={FileText}
-          title="Aucun contrat à afficher"
-          description="Importez un premier contrat pour commencer à explorer vos garanties en détail."
-        />
+      <div className="p-5 md:p-8">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Mes contrats</h1>
+        <p className="text-sm mb-8 mt-1">Explorez vos contrats en détail</p>
+        <div className="card p-8 text-center">
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'var(--brand-light)' }}>
+            <FileText size={28} style={{ color: 'var(--brand)' }} />
+          </div>
+          <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Aucun contrat</h3>
+          <p className="text-sm">Importez un premier contrat pour commencer.</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col lg:flex-row h-full">
-      {/* Mobile: contract selector as a bottom sheet trigger */}
-      <div className="lg:hidden p-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Contrats</h1>
+      {/* Mobile contract picker */}
+      <div className="lg:hidden p-5 pb-3">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Contrats</h1>
         <button
-          onClick={() => setMobileContractOpen(true)}
-          className="w-full glass rounded-2xl p-4 flex items-center gap-3 text-left mt-3"
+          onClick={() => setMobileOpen(true)}
+          className="card card-interactive w-full p-4 mt-3 flex items-center gap-3 text-left"
         >
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500">
-            <FileText size={20} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
+            <FileText size={18} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 truncate">{active?.name}</p>
-            <p className="text-sm text-gray-500">{active?.analysis?.insurer}</p>
+            <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>{active?.name}</p>
+            <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-secondary)' }}>{active?.analysis?.insurer || 'Analyse...'}</p>
           </div>
-          <ChevronRight size={20} className="text-gray-400 flex-shrink-0" />
+          <ChevronRight size={16} style={{ color: 'var(--text-tertiary)' }} />
         </button>
       </div>
 
-      {/* Desktop sidebar list */}
-      <div className="hidden lg:block w-72 border-r border-white/20 p-4 overflow-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Contrats</h1>
-        <div className="space-y-2">
+      {/* Desktop sidebar */}
+      <div className="hidden lg:flex w-72 flex-col border-r" style={{ borderColor: 'var(--border)' }}>
+        <div className="p-5 pb-3">
+          <h1 className="text-xl md:text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Contrats</h1>
+        </div>
+        <div className="px-3 space-y-1.5 flex-1 overflow-auto">
           {contracts.map(contract => (
             <button
               key={contract.id}
               onClick={() => onSelectContract(contract)}
-              className={`w-full text-left p-4 rounded-xl transition-all ${
-                active?.id === contract.id
-                  ? 'bg-white/50 border border-indigo-200'
-                  : 'glass hover:bg-white/40'
-              }`}
+              className="card card-interactive w-full p-3.5 text-left"
+              style={active?.id === contract.id ? { borderColor: 'var(--brand)', background: 'var(--brand-light)' } : {}}
             >
-              <p className="font-semibold text-gray-900 truncate text-sm">{contract.name}</p>
-              <p className="text-xs text-gray-500 truncate mt-0.5">
+              <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>{contract.name}</p>
+              <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-secondary)' }}>
                 {contract.analysis?.insurer || 'Analyse en cours...'}
               </p>
             </button>
@@ -74,116 +74,109 @@ export default function DetailsTab({
         </div>
       </div>
 
-      {/* Contract detail */}
-      <div className="flex-1 overflow-auto p-4 md:p-6 pb-24 lg:pb-6">
+      {/* Content */}
+      <div className="flex-1 overflow-auto p-5 md:p-6 pb-24 lg:pb-6">
         {active?.analysis ? (
-          <div className="space-y-4 stagger">
-            {/* Header */}
-            <div className="glass rounded-2xl p-5 animate-fade-in">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900">{active.analysis.productName}</h2>
-                  <p className="text-gray-500 text-sm mt-0.5">
-                    {active.analysis.insurer} · {active.analysis.policyNumber}
-                  </p>
+          <div className="max-w-xl space-y-4 stagger">
+            {/* Header card */}
+            <div className="card p-5 animate-fade-in">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--brand-light)' }}>
+                  <FileText size={22} style={{ color: 'var(--brand)' }} />
                 </div>
-                <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-600 flex-shrink-0">
-                  {active.category}
-                </span>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>{active.analysis.productName}</h2>
+                  <p className="text-sm mt-0.5">{active.analysis.insurer}</p>
+                  {active.analysis.policyNumber && (
+                    <p className="text-xs mt-1 font-mono" style={{ color: 'var(--text-tertiary)' }}>N° {active.analysis.policyNumber}</p>
+                  )}
+                </div>
               </div>
               {active.analysis.conditions && (
-                <p className="text-gray-600 text-sm leading-relaxed">{active.analysis.conditions}</p>
+                <p className="text-sm mt-4 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  {active.analysis.conditions}
+                </p>
               )}
             </div>
 
-            {/* Key numbers — 2x2 grid */}
+            {/* Key metrics */}
             <div className="grid grid-cols-2 gap-3 animate-fade-in">
-              <div className="glass rounded-xl p-4">
-                <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                  <CreditCard size={14} />
-                  <span className="text-xs font-medium">Prime</span>
+              {[
+                { icon: <CreditCard size={16} />, label: 'Prime mensuelle', value: `${active.analysis.premium} €`, sub: '/mois' },
+                { icon: <AlertCircle size={16} />, label: 'Franchise', value: `${active.analysis.franchise} €`, sub: '' },
+                { icon: <Calendar size={16} />, label: 'Début', value: active.analysis.startDate || '—', sub: '' },
+                { icon: <Calendar size={16} />, label: 'Fin', value: active.analysis.endDate || '—', sub: '' },
+              ].map(({ icon, label, value, sub }) => (
+                <div key={label} className="card p-4">
+                  <div className="flex items-center gap-1.5 mb-2" style={{ color: 'var(--text-tertiary)' }}>
+                    {icon}
+                    <span className="text-xs font-semibold uppercase tracking-wider">{label}</span>
+                  </div>
+                  <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+                    {value}
+                    {sub && <span className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}> {sub}</span>}
+                  </p>
                 </div>
-                <p className="text-xl font-bold text-gray-900">
-                  {active.analysis.premium} €<span className="text-sm font-normal text-gray-500">/mois</span>
-                </p>
-              </div>
-              <div className="glass rounded-xl p-4">
-                <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                  <AlertCircle size={14} />
-                  <span className="text-xs font-medium">Franchise</span>
-                </div>
-                <p className="text-xl font-bold text-gray-900">{active.analysis.franchise} €</p>
-              </div>
-              <div className="glass rounded-xl p-4">
-                <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                  <Calendar size={14} />
-                  <span className="text-xs font-medium">Début</span>
-                </div>
-                <p className="text-base font-semibold text-gray-900">{active.analysis.startDate || '—'}</p>
-              </div>
-              <div className="glass rounded-xl p-4">
-                <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                  <Calendar size={14} />
-                  <span className="text-xs font-medium">Fin</span>
-                </div>
-                <p className="text-base font-semibold text-gray-900">{active.analysis.endDate || '—'}</p>
-              </div>
+              ))}
             </div>
 
             {/* Covered risks */}
-            <div className="glass rounded-2xl p-5 animate-fade-in">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <CheckCircle size={18} className="text-emerald-500" />
-                Risques couverts
-                <span className="ml-auto text-xs bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-medium">
-                  {active.analysis.coveredRisks.length}
-                </span>
-              </h3>
+            <div className="card p-5 animate-fade-in">
+              <div className="flex items-center gap-2 mb-4">
+                <CheckCircle size={18} style={{ color: 'var(--emerald)' }} />
+                <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Risques couverts</h3>
+                <span className="badge badge-emerald ml-auto">{active.analysis.coveredRisks.length}</span>
+              </div>
               {active.analysis.coveredRisks.length > 0 ? (
-                <ul className="space-y-2">
+                <div className="space-y-2">
                   {active.analysis.coveredRisks.map((risk, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
-                      <span className="text-emerald-500 mt-0.5 flex-shrink-0">✓</span>
-                      {risk}
-                    </li>
+                    <div key={i} className="flex items-start gap-2.5 py-2 border-b border-gray-50 last:border-0">
+                      <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'var(--emerald-light)', color: 'var(--emerald)' }}>
+                        <CheckCircle size={11} />
+                      </span>
+                      <span className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{risk}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               ) : (
-                <p className="text-gray-400 text-sm italic">Aucun risque listé dans le contrat</p>
+                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Aucun risque listé.</p>
               )}
             </div>
 
             {/* Exclusions */}
             {active.analysis.excludedRisks.length > 0 && (
-              <div className="glass rounded-2xl p-5 animate-fade-in">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Shield size={18} className="text-red-500" />
-                  Exclusions
-                  <span className="ml-auto text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-medium">
-                    {active.analysis.excludedRisks.length}
-                  </span>
-                </h3>
-                <ul className="space-y-2">
+              <div className="card p-5 animate-fade-in">
+                <div className="flex items-center gap-2 mb-4">
+                  <Shield size={18} style={{ color: 'var(--rose)' }} />
+                  <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Exclusions</h3>
+                  <span className="badge badge-rose ml-auto">{active.analysis.excludedRisks.length}</span>
+                </div>
+                <div className="space-y-2">
                   {active.analysis.excludedRisks.map((risk, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
-                      <span className="text-red-500 mt-0.5 flex-shrink-0">✕</span>
-                      {risk}
-                    </li>
+                    <div key={i} className="flex items-start gap-2.5 py-2 border-b border-gray-50 last:border-0">
+                      <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'var(--rose-light)', color: 'var(--rose)' }}>
+                        <X size={11} />
+                      </span>
+                      <span className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{risk}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 
             {/* Plafonds */}
             {active.analysis.plafonds.length > 0 && (
-              <div className="glass rounded-2xl p-5 animate-fade-in">
-                <h3 className="font-semibold text-gray-900 mb-3">Plafonds de garantie</h3>
+              <div className="card p-5 animate-fade-in">
+                <div className="flex items-center gap-2 mb-4">
+                  <Info size={18} style={{ color: 'var(--brand)' }} />
+                  <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Plafonds</h3>
+                </div>
                 <div className="space-y-2">
-                  {active.analysis.plafonds.map((plafond, i) => (
-                    <div key={i} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                      <span className="text-sm text-gray-700">{plafond.label}</span>
-                      <span className="font-semibold text-gray-900 text-sm">
-                        {plafond.amount.toLocaleString('fr-FR')} €
+                  {active.analysis.plafonds.map((p, i) => (
+                    <div key={i} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
+                      <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{p.label}</span>
+                      <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
+                        {p.amount.toLocaleString('fr-FR')} €
                       </span>
                     </div>
                   ))}
@@ -193,40 +186,33 @@ export default function DetailsTab({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="animate-pulse">
-              <div className="w-48 h-5 bg-gray-200 rounded mb-3 mx-auto" />
-              <div className="w-32 h-4 bg-gray-100 rounded mx-auto" />
-            </div>
-            <p className="text-gray-400 text-sm mt-4">Analyse en cours...</p>
+            <div className="spinner-dark" />
+            <p className="text-sm mt-4">Analyse en cours...</p>
           </div>
         )}
       </div>
 
-      {/* Mobile contract selector modal */}
-      {mobileContractOpen && (
+      {/* Mobile bottom sheet */}
+      {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setMobileContractOpen(false)} />
-          <div className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl max-h-[70vh] overflow-auto animate-fade-in-scale">
-            <div className="sticky top-0 bg-white p-4 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900">Choisir un contrat</h2>
-              <button onClick={() => setMobileContractOpen(false)} className="p-2 text-gray-400 hover:text-gray-600">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[60vh] overflow-auto animate-slide-up">
+            <div className="sticky top-0 flex items-center justify-between p-5 border-b" style={{ borderColor: 'var(--border)', background: 'var(--bg-card)' }}>
+              <h2 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Choisir un contrat</h2>
+              <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg" style={{ color: 'var(--text-tertiary)' }}>
                 <X size={20} />
               </button>
             </div>
-            <div className="p-4 space-y-2">
+            <div className="p-5 space-y-2">
               {contracts.map(contract => (
                 <button
                   key={contract.id}
-                  onClick={() => {
-                    onSelectContract(contract);
-                    setMobileContractOpen(false);
-                  }}
-                  className={`w-full text-left p-4 rounded-xl ${
-                    active?.id === contract.id ? 'bg-indigo-50 border border-indigo-200' : 'bg-gray-50'
-                  }`}
+                  onClick={() => { onSelectContract(contract); setMobileOpen(false); }}
+                  className="card card-interactive w-full p-4 text-left"
+                  style={active?.id === contract.id ? { borderColor: 'var(--brand)', background: 'var(--brand-light)' } : {}}
                 >
-                  <p className="font-semibold text-gray-900">{contract.name}</p>
-                  <p className="text-sm text-gray-500">{contract.analysis?.insurer}</p>
+                  <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{contract.name}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{contract.analysis?.insurer}</p>
                 </button>
               ))}
             </div>
