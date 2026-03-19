@@ -1,225 +1,192 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, MessageCircle } from 'lucide-react';
+import { Send, Bot, User, Loader2, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import type { InsuranceContract, ChatMessage } from '@/types';
 
-export default function ChatTab({
-  contracts,
-  messages,
-  setMessages,
-  selectedContract,
-}: {
+interface Props {
   contracts: InsuranceContract[];
   messages: ChatMessage[];
   setMessages: (msgs: ChatMessage[]) => void;
   selectedContract: InsuranceContract | null;
-}) {
+}
+
+const WELCOME = `Bonjour ! Je suis l&apos;assistant Covera. Sélectionnez un contrat dans l&apos;onglet "Contrats" pour commencer à poser des questions sur vos garanties, exclusions, ou conditions.`;
+
+export default function ChatTab({ contracts, messages, setMessages, selectedContract }: Props) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeContractId, setActiveContractId] = useState<string | null>(
-    selectedContract?.id || contracts[0]?.id || null
-  );
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesRef = useRef(messages);
-  messagesRef.current = messages;
-
-  const activeContract = contracts.find(c => c.id === activeContractId) || contracts[0];
+  const [expanded, setExpanded] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length === 0) {
+      setMessages([{ role: 'assistant', content: WELCOME }]);
+    }
+  }, []);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || !activeContract?.analysis || loading) return;
-
-    const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date(),
-    };
-
-    setMessages([...messagesRef.current, userMsg]);
+  const send = async () => {
+    if (!input.trim() || loading) return;
+    const text = input.trim();
     setInput('');
     setLoading(true);
+    const userMsg: ChatMessage = { role: 'user', content: text };
+    setMessages(prev => [...prev, userMsg]);
 
     try {
-      const historyText = messagesRef.current.map(m => `${m.role}: ${m.content}`).join('\n');
+      const contractText = selectedContract?.analysis?.rawText || selectedContract?.coverageItems.map(i => `${i.name}: ${i.coveredRisks.join(', ')} — Exclusions: ${i.excludedRisks.join(', ')}`).join('\n') || '';
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          question: userMsg.content,
-          contractText: JSON.stringify(activeContract.analysis),
-          conversationHistory: historyText,
+          message: text,
+          contractContext: contractText,
+          contractName: selectedContract?.name,
         }),
       });
       const data = await res.json();
-      const assistantMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.answer || "Je n'ai pas pu analyser votre question.",
-        timestamp: new Date(),
-      };
-      setMessages([...messagesRef.current, assistantMsg]);
+      const reply: ChatMessage = { role: 'assistant', content: data.reply || "Je n'ai pas pu traiter votre demande. Réessayez." };
+      setMessages(prev => [...prev, reply]);
     } catch {
-      const errorMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: "Une erreur s'est produite. Veuillez réessayer.",
-        timestamp: new Date(),
-      };
-      setMessages([...messagesRef.current, errorMsg]);
-    } finally {
-      setLoading(false);
+      setMessages(prev => [...prev, { role: 'assistant', content: "Une erreur s'est produite. Réessayez." }]);
     }
+    setLoading(false);
+    inputRef.current?.focus();
   };
 
-  const quickQuestions = [
-    "Suis-je couvert pour un vol ?",
-    "Montant de ma franchise ?",
-    "Quelles exclusions ?",
-    "Jusqu'à quand couvert ?",
-  ];
-
-  if (contracts.length === 0) {
-    return (
-      <div className="p-5 md:p-8 h-full flex flex-col">
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Chat</h1>
-        <p className="text-sm mt-1 mb-6">Posez des questions sur vos contrats</p>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'var(--brand-light)' }}>
-              <MessageCircle size={28} style={{ color: 'var(--brand)' }} />
-            </div>
-            <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Pas encore de contrat</h3>
-            <p className="text-sm">Importez un contrat pour discuter avec l&apos;IA Covera.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  };
 
   return (
-    <div className="flex flex-col h-full">
+    <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
       {/* Header */}
-      <div className="p-5 pb-3 border-b" style={{ borderColor: 'var(--border)' }}>
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
-            <Bot size={16} />
+      <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid var(--border)', background: 'var(--bg-card)', flexShrink: 0 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: '0 0 8px' }}>Chat</h1>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 10,
+            background: selectedContract ? 'var(--brand-light)' : 'var(--bg-subtle)',
+            border: selectedContract ? '1px solid var(--brand)' : '1px solid var(--border)',
+            cursor: 'pointer', width: '100%', textAlign: 'left',
+          }}
+        >
+          <FileText size={14} style={{ color: selectedContract ? 'var(--brand)' : 'var(--text-tertiary)', flexShrink: 0 }} />
+          <span style={{ fontSize: 13, fontWeight: 600, color: selectedContract ? 'var(--brand)' : 'var(--text-secondary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {selectedContract ? selectedContract.name : 'Sélectionnez un contrat...'}
+          </span>
+          {expanded ? <ChevronUp size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} /> : <ChevronDown size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />}
+        </button>
+
+        {expanded && (
+          <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 200, overflowY: 'auto' }}>
+            {contracts.length === 0 ? (
+              <p style={{ fontSize: 13, color: 'var(--text-tertiary)', margin: 0, textAlign: 'center', padding: 12 }}>Aucun contrat disponible. Importez-en un d&apos;abord.</p>
+            ) : contracts.map(c => (
+              <button
+                key={c.id}
+                onClick={() => { setExpanded(false); }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10,
+                  background: c.id === selectedContract?.id ? 'var(--brand-light)' : 'var(--bg-subtle)',
+                  border: c.id === selectedContract?.id ? '1px solid var(--brand)' : '1px solid var(--border)',
+                  cursor: 'pointer', textAlign: 'left', width: '100%',
+                }}
+              >
+                <FileText size={14} style={{ color: c.id === selectedContract?.id ? 'var(--brand)' : 'var(--text-tertiary)', flexShrink: 0 }} />
+                <span style={{ fontSize: 13, fontWeight: 600, color: c.id === selectedContract?.id ? 'var(--brand)' : 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</span>
+              </button>
+            ))}
           </div>
-          <div>
-            <h1 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Covera Bot</h1>
-          </div>
-        </div>
-        <p className="text-sm">
-          Basé sur {activeContract?.name || 'votre contrat'}
-        </p>
-        {contracts.length > 1 && (
-          <select
-            value={activeContractId || ''}
-            onChange={e => setActiveContractId(e.target.value)}
-            className="input mt-3 text-sm"
-          >
-            {contracts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
         )}
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-auto px-4 md:px-5 py-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="card p-6 animate-fade-in">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
-                <Bot size={20} />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Bonjour, je suis Covera Bot</h3>
-                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Expert en vos contrats d&apos;assurance</p>
-              </div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {messages.map((msg, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 10, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: msg.role === 'assistant' ? 'linear-gradient(135deg, #5B4CF5, #7C5CF5)' : 'var(--bg-subtle)',
+              color: msg.role === 'assistant' ? 'white' : 'var(--text-secondary)',
+            }}>
+              {msg.role === 'assistant' ? <Bot size={16} /> : <User size={16} />}
             </div>
-            <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
-              Je réponds à vos questions sur votre contrat en me basant uniquement sur ses termes. Je ne fabrique jamais d&apos;information.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {quickQuestions.map((q, i) => (
-                <button
-                  key={i}
-                  onClick={() => setInput(q)}
-                  className="btn btn-outline btn-sm"
-                >
-                  {q}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {messages.map(msg => (
-          <div key={msg.id} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={msg.role === 'user'
-                ? { background: 'var(--brand)', color: 'white' }
-                : { background: 'var(--bg-subtle)', color: 'var(--brand)' }}
-            >
-              {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
-            </div>
-            <div
-              className="max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed"
-              style={msg.role === 'user'
-                ? { background: 'var(--brand)', color: 'white', borderBottomRightRadius: '4px' }
-                : { background: 'var(--bg-subtle)', color: 'var(--text-primary)', borderBottomLeftRadius: '4px' }}
-            >
-              {msg.content}
+            <div style={{
+              maxWidth: '75%', padding: '12px 16px', borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+              background: msg.role === 'user' ? 'linear-gradient(135deg, #5B4CF5, #7C5CF5)' : 'var(--bg-card)',
+              color: msg.role === 'user' ? 'white' : 'var(--text-primary)',
+              fontSize: 14, lineHeight: 1.6, boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              border: msg.role === 'assistant' ? '1px solid var(--border)' : 'none',
+            }}>
+              <span dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br/>') }} />
             </div>
           </div>
         ))}
-
         {loading && (
-          <div className="flex gap-2.5">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-subtle)', color: 'var(--brand)' }}>
-              <Bot size={14} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Bot size={16} style={{ color: 'white' }} />
             </div>
-            <div className="card px-4 py-3 rounded-2xl rounded-bl-sm" style={{ borderBottomLeftRadius: '4px' }}>
-              <div className="flex gap-1">
-                {[0, 150, 300].map(delay => (
-                  <span key={delay} className="w-2 h-2 rounded-full" style={{ background: 'var(--brand)', animation: `pulse 1s ease-in-out ${delay}ms infinite` }} />
-                ))}
-              </div>
+            <div style={{ padding: '12px 16px', background: 'var(--bg-card)', borderRadius: 16, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Loader2 size={16} style={{ color: 'var(--brand)', animation: 'spin 0.7s linear infinite' }} />
+              <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>L&apos;IA réfléchit...</span>
             </div>
           </div>
         )}
-
-        <div ref={messagesEndRef} />
+        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t" style={{ borderColor: 'var(--border)', background: 'var(--bg-card)' }}>
-        <div className="flex gap-2 max-w-2xl">
-          <input
-            type="text"
+      <div style={{ padding: '12px 16px 100px', borderTop: '1px solid var(--border)', background: 'var(--bg-card)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, maxWidth: 640, margin: '0 auto' }}>
+          <textarea
+            ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder="Posez une question..."
-            disabled={!activeContract?.analysis || loading}
-            className="input flex-1"
+            onKeyDown={handleKey}
+            placeholder={selectedContract ? 'Posez une question sur votre contrat...' : 'Sélectionnez un contrat d&apos;abord...'}
+            disabled={!selectedContract}
+            rows={1}
+            style={{
+              flex: 1, padding: '12px 16px', boxSizing: 'border-box',
+              background: 'var(--bg-subtle)', border: '1.5px solid var(--border)',
+              borderRadius: 14, fontSize: 14, color: 'var(--text-primary)', outline: 'none',
+              resize: 'none', minHeight: 44, maxHeight: 120, lineHeight: 1.5,
+              fontFamily: 'inherit',
+            }}
+            onFocus={e => (e.target.style.borderColor = 'var(--brand)')}
+            onBlur={e => (e.target.style.borderColor = 'var(--border)')}
+            onInput={e => {
+              const t = e.target as HTMLTextAreaElement;
+              t.style.height = 'auto';
+              t.style.height = `${Math.min(t.scrollHeight, 120)}px`;
+            }}
           />
           <button
-            onClick={handleSend}
-            disabled={!input.trim() || !activeContract?.analysis || loading}
-            className="btn btn-brand btn-md w-12 p-0"
+            onClick={send}
+            disabled={!input.trim() || loading || !selectedContract}
+            style={{
+              width: 44, height: 44, borderRadius: 14, flexShrink: 0,
+              background: input.trim() && selectedContract ? 'linear-gradient(135deg, #5B4CF5, #7C5CF5)' : 'var(--bg-subtle)',
+              color: input.trim() && selectedContract ? 'white' : 'var(--text-tertiary)',
+              border: 'none', cursor: input.trim() && selectedContract ? 'pointer' : 'not-allowed',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: input.trim() && selectedContract ? '0 2px 8px rgba(91,76,245,0.25)' : 'none',
+              transition: 'all 0.2s',
+            }}
           >
-            <Send size={16} />
+            <Send size={18} />
           </button>
         </div>
-        {!activeContract?.analysis && (
-          <p className="text-xs mt-2" style={{ color: 'var(--text-tertiary)' }}>Importez d&apos;abord un contrat analysé.</p>
-        )}
       </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

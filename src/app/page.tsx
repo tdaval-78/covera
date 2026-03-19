@@ -157,16 +157,17 @@ export default function Home() {
 
   if (loading || contractsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-base)]">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', boxShadow: '0 8px 24px rgba(91,76,245,0.3)' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-base)' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 8px 24px rgba(91,76,245,0.3)' }}>
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
               <path d="M16 4L24 9V18C24 25 16 29 16 29C16 29 8 25 8 18V9L16 4Z" fill="white" opacity="0.95"/>
               <path d="M13 16L15.5 18.5L20 13" stroke="#5B4CF5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
-          <div className="w-8 h-8 rounded-full border-2 mx-auto" style={{ borderColor: 'rgba(91,76,245,0.2)', borderTopColor: '#5B4CF5', animation: 'spin 0.7s linear infinite' }} />
+          <div style={{ width: 32, height: 32, borderRadius: '50%', border: '2px solid rgba(91,76,245,0.2)', borderTopColor: '#5B4CF5', animation: 'spin 0.7s linear infinite', margin: '0 auto' }} />
         </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
@@ -187,11 +188,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg-base)]">
-      <div className="hidden lg:flex">
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-base)' }}>
+      <div style={{ display: 'none' }} className="lg:block">
         <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
       </div>
-      <main className="flex-1 overflow-auto">
+      <main style={{ flex: 1, overflow: 'auto' }}>
         {renderTab()}
       </main>
       <MobileNav activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />

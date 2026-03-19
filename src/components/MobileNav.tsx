@@ -1,82 +1,58 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Search, MessageCircle, Plus, User, Moon, Sun } from 'lucide-react';
+import { Home, FileText, MessageCircle, Plus, Moon, Sun } from 'lucide-react';
 
-const tabs = [
+const TABS = [
   { id: 'situation', label: 'Accueil', icon: Home },
-  { id: 'details',   label: 'Contrats', icon: Search },
-  { id: 'chat',      label: 'Chat', icon: MessageCircle },
-  { id: 'account',   label: 'Compte', icon: User, href: '/account' },
+  { id: 'details', label: 'Contrats', icon: FileText },
+  { id: 'chat', label: 'Chat', icon: MessageCircle },
 ];
 
-export default function MobileNav({
-  activeTab,
-  onTabChange,
-  theme,
-  onToggleTheme,
-}: {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  theme: string;
-  onToggleTheme: () => void;
+export default function MobileNav({ activeTab, onTabChange, theme, onToggleTheme }: {
+  activeTab: string; onTabChange: (tab: string) => void; theme: string; onToggleTheme: () => void;
 }) {
-  const pathname = usePathname();
-
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
-      style={{ background: 'var(--bg-card)', borderTop: '1px solid var(--border)', boxShadow: '0 -4px 24px rgba(0,0,0,0.06)' }}
-    >
-      <div className="flex items-center justify-around py-2 px-1 pb-safe">
-        {tabs.map(({ id, label, icon: Icon, href }) => {
-          const isActive = href === '/account'
-            ? pathname === '/account'
-            : activeTab === id && pathname === '/';
-
-          return href === '/account' ? (
-            <Link key={id} href="/account" className={`nav-tab ${isActive ? 'active' : ''}`}>
-              <span className="nav-icon">
-                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-              </span>
-              <span>{label}</span>
-            </Link>
-          ) : (
-            <button
-              key={id}
-              onClick={() => onTabChange(id)}
-              className={`nav-tab ${isActive ? 'active' : ''}`}
-            >
-              <span className="nav-icon">
-                {id === 'add' ? (
-                  <div
-                    className="nav-fab"
-                    style={{ background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', boxShadow: '0 4px 16px rgba(91,76,245,0.4)' }}
-                  >
-                    <Plus size={22} strokeWidth={2.5} />
-                  </div>
-                ) : (
-                  <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-                )}
-              </span>
-              {id !== 'add' && <span>{label}</span>}
-            </button>
-          );
-        })}
-      </div>
-      {/* Theme toggle as extra button */}
-      <div className="absolute top-2 right-2 lg:hidden">
+    <nav style={{
+      position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+      background: 'var(--bg-card)', borderTop: '1px solid var(--border)',
+      boxShadow: '0 -4px 24px rgba(0,0,0,0.06)',
+      paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+    }} className="lg:hidden">
+      {/* Theme toggle */}
+      <div style={{ position: 'absolute', top: 8, right: 8 }}>
         <button
           onClick={onToggleTheme}
-          className="p-2 rounded-xl transition-colors"
-          style={{ color: 'var(--text-tertiary)', background: 'transparent' }}
-          title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+          style={{ padding: 8, borderRadius: 10, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)', display: 'flex' }}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
       </div>
-      <div style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} />
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '8px 0' }}>
+        {TABS.map(({ id, label, icon: Icon }) => {
+          const isActive = activeTab === id;
+          return (
+            <button
+              key={id}
+              onClick={() => onTabChange(id)}
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '4px 16px',
+                background: 'transparent', border: 'none', cursor: 'pointer', color: isActive ? 'var(--brand)' : 'var(--text-tertiary)',
+                transition: 'color 0.15s',
+              }}
+            >
+              <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+              <span style={{ fontSize: 10, fontWeight: isActive ? 700 : 500 }}>{label}</span>
+            </button>
+          );
+        })}
+        <Link href="/account" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '4px 16px', color: 'var(--text-tertiary)', textDecoration: 'none' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span style={{ fontSize: 10, fontWeight: 500 }}>Compte</span>
+        </Link>
+      </div>
     </nav>
   );
 }
