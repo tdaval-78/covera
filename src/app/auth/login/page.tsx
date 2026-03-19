@@ -193,7 +193,6 @@ export default function LoginPage() {
                 required
                 className="input"
                 autoComplete="email"
-                style={{ height: '48px', fontSize: '15px' }}
               />
             </div>
 
@@ -222,7 +221,6 @@ export default function LoginPage() {
                   required
                   className="input pr-12"
                   autoComplete="current-password"
-                  style={{ height: '48px', fontSize: '15px' }}
                 />
                 <button
                   type="button"

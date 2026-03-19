@@ -112,7 +112,7 @@ export default function Sidebar({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{displayName}</p>
-                <p className="text-xs truncate" style={{ color: 'var(--text-tertiary)' }}>{user.email}</p>
+                <p className="text-xs truncate" style={{ color: 'var(--text-tertiary)' }} title={user.email || ''}>{user.email}</p>
               </div>
             </div>
             <button

@@ -129,7 +129,7 @@ export default function SituationTab({
         </div>
 
         <div
-          className="rounded-2xl p-6 mb-6"
+          className="rounded-2xl p-6 mt-6 mb-6"
           style={{ background: 'linear-gradient(135deg, #5B4CF5 0%, #7C5CF5 100%)', boxShadow: '0 8px 32px rgba(91,76,245,0.25)' }}
         >
           <div className="flex items-center gap-2 mb-3">
@@ -143,8 +143,8 @@ export default function SituationTab({
           {onAddContract && (
             <button
               onClick={onAddContract}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all"
-              style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', color: 'white' }}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all"
+              style={{ background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)', color: 'white', border: '1px solid rgba(255,255,255,0.25)' }}
             >
               <Plus size={16} />
               Ajouter mon premier contrat

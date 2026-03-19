@@ -71,8 +71,8 @@ export default function RegisterPage() {
     <div className="min-h-screen flex" style={{ background: '#FAFBFD' }}>
       {/* LEFT: Branding */}
       <div
-        className="hidden lg:flex flex-col w-[48%] p-10 xl:p-14 relative overflow-hidden"
-        style={{ background: 'linear-gradient(155deg, #5B4CF5 0%, #6F58F0 25%, #7C5CF5 50%, #9B6CF5 100%)' }}
+        className="hidden lg:flex flex-col p-10 xl:p-14 relative overflow-hidden"
+        style={{ background: 'linear-gradient(155deg, #5B4CF5 0%, #6F58F0 25%, #7C5CF5 50%, #9B6CF5 100%)', width: 'clamp(360px, 42vw, 520px)', minWidth: '360px', maxWidth: '520px', flexShrink: 0 }}
       >
         <div
           className="absolute inset-0 opacity-[0.04]"
@@ -188,7 +188,6 @@ export default function RegisterPage() {
                 required
                 className="input"
                 autoComplete="name"
-                style={{ height: '48px', fontSize: '15px' }}
               />
             </div>
 
@@ -204,7 +203,6 @@ export default function RegisterPage() {
                 required
                 className="input"
                 autoComplete="email"
-                style={{ height: '48px', fontSize: '15px' }}
               />
             </div>
 
@@ -221,7 +219,6 @@ export default function RegisterPage() {
                   required
                   className="input pr-12"
                   autoComplete="new-password"
-                  style={{ height: '48px', fontSize: '15px' }}
                 />
                 <button
                   type="button"
