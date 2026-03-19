@@ -173,14 +173,24 @@ body {
 .input {
   width: 100%;
   padding: 14px 16px;
-  background: var(--bg-card);
+  background: var(--bg-card) !important;
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 15px;
   color: var(--text-primary);
   transition: border-color 0.2s, box-shadow 0.2s;
   -webkit-appearance: none;
-  line-height: 1.4;
+  line-height: 1.5;
+}
+
+/* Fix browser autofill background override */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-card) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 .input::placeholder { color: var(--text-tertiary); }
 .input:focus {

@@ -69,7 +69,7 @@ export default function LoginPage() {
           </div>
           <div>
             <span className="text-xl font-bold text-white tracking-tight">Covera</span>
-            <p className="text-white/60 text-xs mt-0.5">Tes assurances clarifiées</p>
+            <p className="text-white/70 text-xs mt-0.5">Tes assurances clarifiées</p>
           </div>
         </div>
 
@@ -97,12 +97,12 @@ export default function LoginPage() {
             </div>
             <div className="min-w-0">
               <p className="text-white font-semibold text-sm">+2 400 utilisateurs</p>
-              <p className="text-white/65 text-xs">contrats analysés ce mois</p>
+              <p className="text-white/70 text-xs">contrats analysés ce mois</p>
             </div>
           </div>
 
           {/* Testimonials */}
-          <div className="space-y-3 overflow-hidden">
+          <div className="space-y-4 overflow-hidden">
             {[
               {
                 quote: "Je ne savais même pas que mon téléphone était assuré pour le vol. Covera m'a permis de découvrir des garanties que je payais sans le savoir.",
@@ -147,8 +147,8 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="relative z-10 flex items-center justify-between mt-8 gap-4">
-          <p className="text-white/55 text-xs flex-shrink-0">© 2026 Covera · données chiffrées</p>
-          <div className="flex items-center gap-1.5 text-white/55 text-xs flex-shrink-0">
+          <p className="text-white/70 text-xs flex-shrink-0">© 2026 Covera · données chiffrées</p>
+          <div className="flex items-center gap-1.5 text-white/70 text-xs flex-shrink-0">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>

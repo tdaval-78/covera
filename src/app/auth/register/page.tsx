@@ -122,7 +122,7 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <p className="text-white font-semibold text-sm">{title}</p>
-                  <p className="text-white/55 text-xs">{desc}</p>
+                  <p className="text-white/70 text-xs">{desc}</p>
                 </div>
               </div>
             ))}
@@ -141,7 +141,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="relative z-10 mt-8">
-          <p className="text-white/50 text-xs">© 2026 Covera · sans engagement</p>
+          <p className="text-white/70 text-xs">© 2026 Covera · sans engagement</p>
         </div>
       </div>
 
