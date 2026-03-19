@@ -153,10 +153,10 @@ export default function LoginPage() {
           )}
 
           {/* Form */}
-          <form onSubmit={doLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {/* Email field */}
-            <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Adresse email</label>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Adresse email</label>
               <input
                 type="email"
                 value={email}
@@ -165,21 +165,20 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 style={{
-                  width: '100%', padding: '14px 16px',
-                  background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)',
+                  display: 'block', width: '100%', padding: '14px 16px',
+                  background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.08)',
                   borderRadius: '12px', fontSize: '15px', color: '#0F172A',
-                  outline: 'none', transition: 'border-color 0.2s',
-                  boxSizing: 'border-box',
+                  outline: 'none', boxSizing: 'border-box',
                 }}
                 onFocus={e => (e.target.style.borderColor = '#5B4CF5')}
-                onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.06)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.08)')}
               />
             </div>
 
             {/* Password field */}
-            <div>
+            <div style={{ marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <label style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Mot de passe</label>
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Mot de passe</label>
                 <Link href="/auth/forgot-password" style={{ fontSize: '12px', fontWeight: 600, color: '#5B4CF5', textDecoration: 'none' }}>Oublié ?</Link>
               </div>
               <div style={{ position: 'relative' }}>
@@ -191,14 +190,13 @@ export default function LoginPage() {
                   required
                   autoComplete="current-password"
                   style={{
-                    width: '100%', padding: '14px 48px 14px 16px',
-                    background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)',
+                    display: 'block', width: '100%', padding: '14px 48px 14px 16px',
+                    background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.08)',
                     borderRadius: '12px', fontSize: '15px', color: '#0F172A',
-                    outline: 'none', transition: 'border-color 0.2s',
-                    boxSizing: 'border-box',
+                    outline: 'none', boxSizing: 'border-box',
                   }}
                   onFocus={e => (e.target.style.borderColor = '#5B4CF5')}
-                  onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.06)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.08)')}
                 />
                 <button
                   type="button"
@@ -212,16 +210,23 @@ export default function LoginPage() {
 
             {/* Submit */}
             <button
-              type="submit"
+              type="button"
               disabled={loading}
+              onClick={async (e) => {
+                e.preventDefault();
+                setError('');
+                setLoading(true);
+                const { error } = await signIn(email, password);
+                if (error) { setError(error); setLoading(false); }
+                else router.push('/');
+              }}
               style={{
                 width: '100%', padding: '15px 24px', borderRadius: '12px',
                 background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)',
                 color: 'white', fontSize: '15px', fontWeight: 600, border: 'none',
                 cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1,
                 boxShadow: '0 2px 8px rgba(91,76,245,0.25)',
-                transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                marginTop: '4px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
               }}
             >
               {loading ? (
@@ -231,7 +236,7 @@ export default function LoginPage() {
                 </>
               ) : 'Se connecter'}
             </button>
-          </form>
+          </div>
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '28px 0' }}>

@@ -143,30 +143,30 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form onSubmit={doRegister} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Nom complet</label>
               <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Thomas Dupont" required autoComplete="name"
-                style={{ width: '100%', padding: '14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                style={{ display: 'block', width: '100%', padding: '14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.08)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box' }}
                 onFocus={e => (e.target.style.borderColor = '#5B4CF5')}
-                onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.06)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.08)')}
               />
             </div>
-            <div>
+            <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="vous@exemple.com" required autoComplete="email"
-                style={{ width: '100%', padding: '14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                style={{ display: 'block', width: '100%', padding: '14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.08)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box' }}
                 onFocus={e => (e.target.style.borderColor = '#5B4CF5')}
-                onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.06)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.08)')}
               />
             </div>
-            <div>
+            <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Mot de passe</label>
               <div style={{ position: 'relative' }}>
                 <input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Minimum 6 caractères" required autoComplete="new-password"
-                  style={{ width: '100%', padding: '14px 48px 14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.06)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                  style={{ display: 'block', width: '100%', padding: '14px 48px 14px 16px', background: '#FFFFFF', border: '1.5px solid rgba(0,0,0,0.08)', borderRadius: '12px', fontSize: '15px', color: '#0F172A', outline: 'none', boxSizing: 'border-box' }}
                   onFocus={e => (e.target.style.borderColor = '#5B4CF5')}
-                  onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.06)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.08)')}
                 />
                 <button type="button" onClick={() => setShowPw(!showPw)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: '4px', display: 'flex' }}>
                   {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -175,9 +175,9 @@ export default function RegisterPage() {
               {s && (
                 <div style={{ marginTop: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ flex: 1, height: '4px', borderRadius: '4px', background: '#F4F6F8', display: 'flex', gap: '4px', overflow: 'hidden' }}>
+                    <div style={{ flex: 1, height: '4px', borderRadius: '4px', background: '#F4F6F8', display: 'flex', gap: '4px', overflow: 'hidden', position: 'relative' }}>
                       {[1, 2, 3, 4].map(i => (
-                        <div key={i} style={{ flex: 1, borderRadius: '4px', background: i <= s.level ? s.color : 'transparent', transition: 'background 0.3s' }} />
+                        <div key={i} style={{ flex: 1, borderRadius: '4px', background: i <= s.level ? s.color : '#E2E8F0', transition: 'background 0.3s', position: 'relative' }} />
                       ))}
                     </div>
                     <span style={{ fontSize: '11px', fontWeight: 700, color: s.color }}>{s.label}</span>
@@ -186,17 +186,26 @@ export default function RegisterPage() {
               )}
             </div>
 
-            <button type="submit" disabled={loading}
-              style={{ width: '100%', padding: '15px 24px', borderRadius: '12px', background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', color: 'white', fontSize: '15px', fontWeight: 600, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, boxShadow: '0 2px 8px rgba(91,76,245,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '4px' }}>
+            <button type="button" disabled={loading}
+              onClick={async (e) => {
+                e.preventDefault();
+                setError('');
+                if (password.length < 6) { setError('Le mot de passe doit contenir au moins 6 caractères.'); return; }
+                setLoading(true);
+                const { error } = await signUp(email, password, fullName);
+                if (error) { setError(error); setLoading(false); }
+                else { setSuccess(true); setLoading(false); }
+              }}
+              style={{ width: '100%', padding: '15px 24px', borderRadius: '12px', background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', color: 'white', fontSize: '15px', fontWeight: 600, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, boxShadow: '0 2px 8px rgba(91,76,245,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
               {loading ? (
                 <><span style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', animation: 'spin 0.7s linear infinite' }} />Création...</>
               ) : 'Créer mon compte'}
             </button>
 
-            <p style={{ fontSize: '12px', color: '#94A3B8', textAlign: 'center', lineHeight: 1.6, marginTop: '4px' }}>
+            <p style={{ fontSize: '12px', color: '#94A3B8', textAlign: 'center', lineHeight: 1.6, marginTop: '16px' }}>
               En créant un compte, vous acceptez nos <a href="#" style={{ color: '#5B4CF5', textDecoration: 'underline' }}>conditions</a> et notre <a href="#" style={{ color: '#5B4CF5', textDecoration: 'underline' }}>politique de confidentialité</a>.
             </p>
-          </form>
+          </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '28px 0' }}>
             <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.06)' }} />
