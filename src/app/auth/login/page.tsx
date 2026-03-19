@@ -28,9 +28,13 @@ export default function LoginPage() {
     <div className="min-h-screen flex" style={{ background: '#FAFBFD' }}>
       {/* ─── LEFT: Branding panel ─── */}
       <div
-        className="hidden lg:flex flex-col w-[48%] p-10 xl:p-14 relative overflow-hidden"
+        className="hidden lg:flex flex-col p-10 xl:p-14 relative overflow-hidden"
         style={{
           background: 'linear-gradient(155deg, #5B4CF5 0%, #6F58F0 25%, #7C5CF5 50%, #9B6CF5 100%)',
+          width: 'clamp(360px, 42vw, 520px)',
+          minWidth: '360px',
+          maxWidth: '520px',
+          flexShrink: 0,
         }}
       >
         {/* Subtle pattern overlay */}
@@ -76,8 +80,8 @@ export default function LoginPage() {
           </p>
 
           {/* Social proof */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className="flex -space-x-2">
+          <div className="flex items-center gap-3 mb-8 overflow-hidden">
+            <div className="flex -space-x-2 flex-shrink-0">
               {['EM', 'ML', 'AC', 'JR'].map(initial => (
                 <div
                   key={initial}
@@ -88,34 +92,34 @@ export default function LoginPage() {
                 </div>
               ))}
             </div>
-            <div>
+            <div className="min-w-0 overflow-hidden">
               <p className="text-white font-semibold text-sm">+2 400 utilisateurs</p>
-              <p className="text-white/55 text-xs">contrats analysés ce mois</p>
+              <p className="text-white/55 text-xs truncate">contrats analysés ce mois</p>
             </div>
           </div>
 
           {/* Testimonials */}
-          <div className="space-y-3">
+          <div className="space-y-3 overflow-hidden">
             {[
-              { quote: 'Je ne savais même pas que mon téléphone était assuré pour le vol. Covera m&apos;a permis de découvrir des garanties que je payais sans le savoir.', author: 'Sophie M.', role: 'Utilisatrice Covera depuis 3 mois' },
-              { quote: 'Quand j&apos;ai eu un sinistre, j&apos;ai pu répondre à l&apos;assureur en connaissant exactement mes droits. Ça m&apos;a économisé 400€.', author: 'Thomas L.', role: 'Utilisateur Covera depuis 6 mois' },
+              { quote: "Je ne savais même pas que mon téléphone était assuré pour le vol. Covera m'a permis de découvrir des garanties que je payais sans le savoir.", author: 'Sophie M.', role: 'Utilisatrice Covera depuis 3 mois' },
+              { quote: "Quand j'ai eu un sinistre, j'ai pu répondre à l'assureur en connaissant exactement mes droits. Ça m'a économisé 400€.", author: 'Thomas L.', role: 'Utilisateur Covera depuis 6 mois' },
             ].map(({ quote, author, role }) => (
               <div
                 key={author}
-                className="p-4 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.11)', backdropFilter: 'blur(16px)' }}
+                className="p-4 rounded-xl w-full"
+                style={{ background: 'rgba(255,255,255,0.11)', backdropFilter: 'blur(16px)', maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }}
               >
-                <p className="text-white/90 text-sm leading-relaxed mb-2">&ldquo;{quote}&rdquo;</p>
+                <p className="text-white/90 text-sm leading-relaxed mb-2" style={{ wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%' }}>&ldquo;{quote}&rdquo;</p>
                 <div className="flex items-center gap-2">
                   <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                     style={{ background: 'rgba(255,255,255,0.2)' }}
                   >
                     {author.charAt(0)}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-white text-xs font-semibold">{author}</p>
-                    <p className="text-white/45 text-xs">{role}</p>
+                    <p className="text-white/45 text-xs truncate">{role}</p>
                   </div>
                 </div>
               </div>
@@ -125,8 +129,8 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="relative z-10 flex items-center justify-between">
-          <p className="text-white/35 text-xs">© 2026 Covera · données chiffrées</p>
-          <div className="flex items-center gap-1.5 text-white/35 text-xs">
+          <p className="text-white/50 text-xs">© 2026 Covera · données chiffrées</p>
+          <div className="flex items-center gap-1.5 text-white/50 text-xs">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
