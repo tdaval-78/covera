@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Sidebar from '@/components/Sidebar';
+import MobileNav from '@/components/MobileNav';
 import SituationTab from '@/components/tabs/SituationTab';
 import DetailsTab from '@/components/tabs/DetailsTab';
 import ChatTab from '@/components/tabs/ChatTab';
 import AddContractTab from '@/components/tabs/AddContractTab';
+import { LoadingSpinner } from '@/components/ui/EmptyState';
 import type { InsuranceContract, ChatMessage } from '@/types';
-import { Loader2 } from 'lucide-react';
 
 type Tab = 'situation' | 'details' | 'chat' | 'add';
 
@@ -35,8 +36,10 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 size={40} className="animate-spin mx-auto text-indigo-500 mb-3" />
-          <p className="text-gray-500 text-sm">Chargement...</p>
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg" style={{boxShadow:'0 8px 24px rgba(99,102,241,0.3)'}}>
+            <span className="text-white text-2xl font-bold">C</span>
+          </div>
+          <LoadingSpinner size={28} text="Chargement..." />
         </div>
       </div>
     );
@@ -47,7 +50,16 @@ export default function Home() {
   const renderTab = () => {
     switch (activeTab) {
       case 'situation':
-        return <SituationTab contracts={contracts} onSelectContract={setSelectedContract} />;
+        return (
+          <SituationTab
+            contracts={contracts}
+            onSelectContract={(c) => {
+              setSelectedContract(c);
+              setActiveTab('details');
+            }}
+            onAddContract={() => setActiveTab('add')}
+          />
+        );
       case 'details':
         return (
           <DetailsTab
@@ -79,10 +91,18 @@ export default function Home() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar activeTab={activeTab} onTabChange={(tab) => setActiveTab(tab as Tab)} />
-      <main className="flex-1 overflow-auto">
+      {/* Desktop sidebar — hidden on mobile */}
+      <div className="hidden lg:flex">
+        <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} />
+      </div>
+
+      {/* Main content */}
+      <main className="flex-1 overflow-auto pb-20 lg:pb-0">
         {renderTab()}
       </main>
+
+      {/* Mobile bottom nav */}
+      <MobileNav activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} />
     </div>
   );
 }

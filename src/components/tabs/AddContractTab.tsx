@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Upload, FileText, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Upload, FileText, AlertCircle, CheckCircle, Loader2, Image, X } from 'lucide-react';
 import type { InsuranceContract, ContractAnalysis, CoverageItem } from '@/types';
 
 type Step = 'upload' | 'analyzing' | 'done' | 'error';
@@ -34,19 +34,14 @@ export default function AddContractTab({
   const extractTextFromPDF = async (f: File): Promise<string> => {
     const pdfjsLib = await import('pdfjs-dist');
     pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-    
     const arrayBuffer = await f.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    
     let fullText = '';
     for (let i = 1; i <= Math.min(pdf.numPages, 50); i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       const pageText = textContent.items
-        .map((item: unknown) => {
-          const textItem = item as { str?: string };
-          return textItem.str || '';
-        })
+        .map((item: unknown) => (item as { str?: string }).str || '')
         .join(' ');
       fullText += `\n${pageText}`;
     }
@@ -62,32 +57,28 @@ export default function AddContractTab({
 
   const handleAnalyze = async () => {
     if (!file) return;
-
     setStep('analyzing');
     setError('');
 
     try {
       let text = '';
-
       if (file.type === 'application/pdf') {
         text = await extractTextFromPDF(file);
       } else if (file.type.startsWith('image/')) {
-        // For images, we'll send base64 to the AI for vision analysis
-        const base64 = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
+        const reader = new FileReader();
+        text = await new Promise((resolve) => {
           reader.onload = () => {
             const result = reader.result as string;
-            resolve(result.split(',')[1]);
+            resolve(`[IMAGE:${file.name} - base64 data]`);
           };
           reader.readAsDataURL(file);
         });
-        text = `[IMAGE:${file.name} - base64:${base64.substring(0, 100)}...]`;
       } else {
         text = await file.text();
       }
 
       if (!text || text.length < 50) {
-        throw new Error('Impossible d\'extraire le texte du document. Assurez-vous que le PDF contient du texte extractible (pas uniquement des images scannées).');
+        throw new Error('Document illisible. Assurez-vous que le PDF contient du texte extractible.');
       }
 
       const res = await fetch('/api/analyze-contract', {
@@ -97,15 +88,10 @@ export default function AddContractTab({
       });
 
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Erreur lors de l\'analyse');
-      }
-
+      if (!res.ok) throw new Error(data.error || 'Erreur lors de l\'analyse');
       setAnalysis(data.analysis);
       setStep('done');
     } catch (err) {
-      console.error('Analysis error:', err);
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
       setStep('error');
     }
@@ -113,7 +99,6 @@ export default function AddContractTab({
 
   const handleConfirm = () => {
     if (!analysis || !file) return;
-
     const coverageItem: CoverageItem = {
       id: Date.now().toString(),
       name: analysis.productName || contractName,
@@ -130,9 +115,8 @@ export default function AddContractTab({
       excludedRisks: analysis.excludedRisks || [],
       plafonds: analysis.plafonds || [],
       conditions: analysis.conditions || '',
-      notes: `Confiance de l'analyse: ${Math.round((analysis.confidence || 0) * 100)}%`,
+      notes: `Confiance: ${Math.round((analysis.confidence || 0) * 100)}%`,
     };
-
     const contract: InsuranceContract = {
       id: Date.now().toString(),
       userId: 'anonymous',
@@ -144,7 +128,6 @@ export default function AddContractTab({
       analysis,
       coverageItems: [coverageItem],
     };
-
     onContractAdded(contract);
   };
 
@@ -159,232 +142,203 @@ export default function AddContractTab({
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  return (
-    <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Ajouter un contrat</h1>
-      <p className="text-gray-500 mb-8">
-        Importez votre contrat d'assurance pour l'analyser automatiquement.
-      </p>
+  // UPLOAD STEP
+  if (step === 'upload') {
+    return (
+      <div className="p-4 md:p-8 max-w-lg mx-auto">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Ajouter un contrat</h1>
+        <p className="text-gray-500 mb-6 text-sm md:text-base">
+          Importez votre contrat pour l&apos;analyser automatiquement.
+        </p>
 
-      {/* Upload step */}
-      {step === 'upload' && (
-        <div>
-          <div
-            className={`border-2 border-dashed rounded-2xl p-12 text-center transition-colors ${
-              dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
-            }`}
-            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={e => {
-              e.preventDefault();
-              setDragOver(false);
-              const f = e.dataTransfer.files[0];
-              if (f) handleFile(f);
-            }}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Upload size={48} className={`mx-auto mb-4 ${dragOver ? 'text-blue-500' : 'text-gray-400'}`} />
-            <p className="text-gray-700 font-medium mb-1">
-              Glissez-déposez votre contrat ici
-            </p>
-            <p className="text-gray-400 text-sm mb-4">
-              PDF, image ou fichier texte accepté
-            </p>
-            <button className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors">
-              Choisir un fichier
+        <div
+          className={`border-2 border-dashed rounded-2xl p-8 md:p-12 text-center transition-all cursor-pointer ${
+            dragOver ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 hover:border-indigo-300 hover:bg-white/50'
+          }`}
+          onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={e => {
+            e.preventDefault();
+            setDragOver(false);
+            const f = e.dataTransfer.files[0];
+            if (f) handleFile(f);
+          }}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
+            <Upload size={28} className="text-indigo-500" />
+          </div>
+          <p className="font-semibold text-gray-800 mb-1">Glissez-déposez votre contrat</p>
+          <p className="text-sm text-gray-400 mb-4">PDF, photo ou fichier texte</p>
+          <div className="btn-primary inline-flex px-5 py-2.5 rounded-xl text-sm font-semibold">
+            Choisir un fichier
+          </div>
+        </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,image/*,.txt,.doc,.docx"
+          className="hidden"
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+        />
+
+        {fileName && (
+          <div className="mt-4 glass rounded-xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500 flex-shrink-0">
+              {file?.type?.startsWith('image/') ? <Image size={20} /> : <FileText size={20} />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-gray-900 truncate text-sm">{fileName}</p>
+              <p className="text-xs text-gray-400">{file?.type}</p>
+            </div>
+            <button onClick={reset} className="p-1.5 text-gray-400 hover:text-red-500">
+              <X size={18} />
             </button>
           </div>
+        )}
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,image/*,.txt,.doc,.docx"
-            className="hidden"
-            onChange={e => {
-              const f = e.target.files?.[0];
-              if (f) handleFile(f);
-            }}
-          />
-
-          {fileName && (
-            <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200 flex items-center gap-3">
-              <FileText size={24} className="text-blue-500" />
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">{fileName}</p>
-                <p className="text-sm text-gray-500">{file?.type}</p>
-              </div>
-              <button
-                onClick={reset}
-                className="text-gray-400 hover:text-red-500 transition-colors"
+        {file && (
+          <div className="mt-5 space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nom du contrat</label>
+              <input
+                type="text"
+                value={contractName}
+                onChange={e => setContractName(e.target.value)}
+                placeholder="ex: Ma mutuelle 2025"
+                className="w-full glass-input px-4 py-3 rounded-xl text-gray-900 text-sm placeholder:text-gray-400"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Catégorie</label>
+              <select
+                value={category}
+                onChange={e => setCategory(e.target.value as CoverageItem['category'])}
+                className="w-full glass-input px-4 py-3 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                ✕
-              </button>
+                {categoryOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={handleAnalyze}
+              className="w-full btn-primary py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+            >
+              <FileText size={18} />
+              Analyser le contrat
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ANALYZING STEP
+  if (step === 'analyzing') {
+    return (
+      <div className="p-4 md:p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div className="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center mb-6">
+          <Loader2 size={40} className="text-indigo-500 animate-spin" />
+        </div>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Analyse en cours...</h2>
+        <p className="text-gray-500 text-sm max-w-xs">
+          Lecture du contrat en cours. Cela peut prendre quelques secondes.
+        </p>
+        <div className="mt-6 w-48 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-full bg-indigo-500 rounded-full animate-pulse w-3/4" />
+        </div>
+      </div>
+    );
+  }
+
+  // DONE STEP
+  if (step === 'done' && analysis) {
+    return (
+      <div className="p-4 md:p-8 max-w-lg mx-auto">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Analyse terminée</h1>
+
+        <div className="glass rounded-2xl p-5 mt-5 space-y-4">
+          <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl">
+            <CheckCircle size={24} className="text-emerald-600 flex-shrink-0" />
+            <div>
+              <p className="font-semibold text-emerald-800">Contrat analysé !</p>
+              <p className="text-xs text-emerald-700">Confiance: {Math.round((analysis.confidence || 0) * 100)}%</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: 'Assureur', value: analysis.insurer || '—' },
+              { label: 'N° contrat', value: analysis.policyNumber || '—' },
+              { label: 'Prime', value: `${analysis.premium || 0} €/mois` },
+              { label: 'Franchise', value: `${analysis.franchise || 0} €` },
+            ].map(({ label, value }) => (
+              <div key={label} className="bg-white/50 rounded-xl p-3">
+                <p className="text-xs text-gray-500">{label}</p>
+                <p className="font-semibold text-gray-900 text-sm truncate">{value}</p>
+              </div>
+            ))}
+          </div>
+
+          {analysis.coveredRisks.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-500 mb-2 font-medium">Risques couverts</p>
+              <div className="flex flex-wrap gap-1.5">
+                {analysis.coveredRisks.slice(0, 6).map((r, i) => (
+                  <span key={i} className="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-medium">
+                    ✓ {r}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
-          {file && (
-            <div className="mt-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nom du contrat
-                </label>
-                <input
-                  type="text"
-                  value={contractName}
-                  onChange={e => setContractName(e.target.value)}
-                  placeholder="ex: Ma mutuelle 2025"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+          {analysis.excludedRisks.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-500 mb-2 font-medium">Exclusions</p>
+              <div className="flex flex-wrap gap-1.5">
+                {analysis.excludedRisks.slice(0, 4).map((r, i) => (
+                  <span key={i} className="px-2.5 py-1 bg-red-50 text-red-700 rounded-full text-xs font-medium">
+                    ✕ {r}
+                  </span>
+                ))}
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Catégorie
-                </label>
-                <select
-                  value={category}
-                  onChange={e => setCategory(e.target.value as CoverageItem['category'])}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {categoryOptions.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
+            </div>
+          )}
 
-              <button
-                onClick={handleAnalyze}
-                className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
-              >
-                <FileText size={18} />
-                Analyser le contrat
-              </button>
+          {analysis.conditions && (
+            <div className="bg-white/50 rounded-xl p-3">
+              <p className="text-xs text-gray-500 mb-1 font-medium">Conditions</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{analysis.conditions}</p>
             </div>
           )}
         </div>
-      )}
 
-      {/* Analyzing step */}
-      {step === 'analyzing' && (
-        <div className="text-center py-20">
-          <Loader2 size={48} className="mx-auto text-blue-500 animate-spin mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Analyse en cours...
-          </h2>
-          <p className="text-gray-500">
-            Lecture du contrat en cours. Cela peut prendre quelques secondes.
-          </p>
-          <div className="mt-6 max-w-xs mx-auto">
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-              <div className="h-full bg-blue-500 rounded-full animate-pulse w-3/4" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Done step */}
-      {step === 'done' && analysis && (
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl">
-            <CheckCircle size={24} className="text-green-600" />
-            <div>
-              <p className="font-semibold text-green-800">Contrat analysé avec succès !</p>
-              <p className="text-sm text-green-700">
-                Confiance de l'analyse : {Math.round((analysis.confidence || 0) * 100)}%
-              </p>
-            </div>
-          </div>
-
-          {/* Analysis preview */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
-            <h3 className="font-semibold text-gray-900 text-lg">Résumé de l'analyse</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Assureur</p>
-                <p className="font-medium text-gray-900">{analysis.insurer || '—'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">N° de contrat</p>
-                <p className="font-medium text-gray-900">{analysis.policyNumber || '—'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Prime</p>
-                <p className="font-medium text-gray-900">{analysis.premium || 0} €/mois</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Franchise</p>
-                <p className="font-medium text-gray-900">{analysis.franchise || 0} €</p>
-              </div>
-            </div>
-
-            {analysis.coveredRisks.length > 0 && (
-              <div>
-                <p className="text-sm text-gray-500 mb-2">Risques couverts</p>
-                <div className="flex flex-wrap gap-2">
-                  {analysis.coveredRisks.slice(0, 6).map((r, i) => (
-                    <span key={i} className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm">
-                      ✓ {r}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {analysis.excludedRisks.length > 0 && (
-              <div>
-                <p className="text-sm text-gray-500 mb-2">Exclusions</p>
-                <div className="flex flex-wrap gap-2">
-                  {analysis.excludedRisks.slice(0, 4).map((r, i) => (
-                    <span key={i} className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-sm">
-                      ✕ {r}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {analysis.conditions && (
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Conditions</p>
-                <p className="text-gray-700 text-sm">{analysis.conditions}</p>
-              </div>
-            )}
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={reset}
-              className="flex-1 py-3 border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl font-medium transition-colors"
-            >
-              Annuler
-            </button>
-            <button
-              onClick={handleConfirm}
-              className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors"
-            >
-              Confirmer et ajouter
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Error step */}
-      {step === 'error' && (
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 p-4 bg-red-50 rounded-xl">
-            <AlertCircle size={24} className="text-red-600" />
-            <div>
-              <p className="font-semibold text-red-800">Erreur lors de l'analyse</p>
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          </div>
-          <button
-            onClick={reset}
-            className="w-full py-3 border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl font-medium transition-colors"
-          >
-            Réessayer
+        <div className="flex gap-3 mt-5">
+          <button onClick={reset} className="flex-1 btn-secondary py-3 rounded-xl font-semibold text-sm">
+            Annuler
+          </button>
+          <button onClick={handleConfirm} className="flex-1 btn-primary py-3 rounded-xl font-semibold text-sm">
+            Confirmer
           </button>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  // ERROR STEP
+  return (
+    <div className="p-4 md:p-8 max-w-lg mx-auto text-center py-12">
+      <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4">
+        <AlertCircle size={32} className="text-red-500" />
+      </div>
+      <h2 className="text-xl font-bold text-gray-900 mb-2">Erreur d&apos;analyse</h2>
+      <p className="text-gray-500 text-sm max-w-xs mx-auto mb-6">{error}</p>
+      <button onClick={reset} className="btn-primary px-6 py-3 rounded-xl font-semibold text-sm">
+        Réessayer
+      </button>
     </div>
   );
 }

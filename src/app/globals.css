@@ -238,3 +238,52 @@ body::before {
 @media (max-width: 768px) {
   body { background: linear-gradient(180deg, #e0e7ff 0%, #f0f9ff 60%, #ede9fe 100%); }
 }
+
+/* ─── MOBILE POLISH ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Touch-friendly tap targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent text size adjustment on iOS */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Hide horizontal scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Full-width inputs on mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  select,
+  textarea {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  /* Bottom sheet safe area */
+  .safe-area-bottom {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  /* Better focus on mobile */
+  *:focus {
+    outline: none;
+  }
+}
+
+/* ─── PRINT ─────────────────────────────────────────────── */
+@media print {
+  body::before { display: none; }
+  .glass { background: white; backdrop-filter: none; border: 1px solid #e5e7eb; }
+}
