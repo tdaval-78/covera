@@ -449,3 +449,10 @@ body {
   .sidebar, .mobile-nav { display: none !important; }
   .card { box-shadow: none; border: 1px solid #e5e7eb; }
 }
+
+/* Global input placeholder — darker for better readability */
+input::placeholder,
+textarea::placeholder {
+  color: #94A3B8 !important;
+  opacity: 1 !important;
+}

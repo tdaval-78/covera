@@ -225,7 +225,7 @@ export default function LoginPage() {
                 backgroundPosition: loading ? '0% center' : '100% center',
                 color: 'white', fontSize: '15px', fontWeight: 600, border: 'none',
                 cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1,
-                boxShadow: '0 4px 12px rgba(91,76,245,0.3), 0 1px 3px rgba(0,0,0,0.08)',
+                boxShadow: '0 2px 8px rgba(91,76,245,0.25), 0 0 0 1px rgba(91,76,245,0.05)',
                 transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                 animation: loading ? 'shimmer 1.5s linear infinite' : 'none',
