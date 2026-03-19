@@ -104,12 +104,12 @@ export default function RegisterPage() {
           <h2 className="text-white font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', letterSpacing: '-0.03em' }}>
             Comprenez enfin<br />vos contrats.
           </h2>
-          <p className="text-white/75 text-base leading-relaxed mb-10 max-w-sm">
+          <p className="text-white/75 text-base leading-relaxed mb-8 max-w-sm">
             Gratuit pour toujours. Analysez vos contrats en 30 secondes avec l&apos;IA. Aucune carte bancaire requise.
           </p>
 
           {/* Features */}
-          <div className="space-y-3 mb-8">
+          <div className="space-y-3 mb-6">
             {[
               { icon: '📄', title: 'Importez en 30s', desc: 'PDF, photo ou texte — ça marche avec tout' },
               { icon: '🧠', title: 'IA qui comprend tout', desc: 'Résume automatiquement vos garanties et exclusions' },
@@ -141,7 +141,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="relative z-10 mt-8">
-          <p className="text-white/70 text-xs">© 2026 Covera · sans engagement</p>
+          <p className="text-white/70 text-xs">© 2026 Covera</p>
         </div>
       </div>
 
@@ -163,7 +163,7 @@ export default function RegisterPage() {
               Créer un compte ✨
             </h1>
             <p style={{ color: 'var(--text-secondary)' }}>
-              Gratuit, sans carte bancaire, en 30 secondes.
+              Gratuit · sans carte bancaire · 30 secondes.
             </p>
           </div>
 
@@ -273,7 +273,7 @@ export default function RegisterPage() {
               ) : 'Créer mon compte'}
             </button>
 
-            <p className="text-center text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+            <p className="text-center text-xs leading-relaxed mt-4" style={{ color: 'var(--text-tertiary)' }}>
               En créant un compte, vous acceptez nos{' '}
               <a href="#" className="underline" style={{ color: 'var(--brand)' }}>conditions d&apos;utilisation</a>{' '}
               et notre{' '}
@@ -281,7 +281,7 @@ export default function RegisterPage() {
             </p>
           </form>
 
-          <div className="flex items-center gap-4 my-7">
+          <div className="flex items-center gap-4 my-8">
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
             <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Déjà un compte ?</span>
             <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />

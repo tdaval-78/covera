@@ -177,10 +177,15 @@ body {
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 15px;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   transition: border-color 0.2s, box-shadow 0.2s;
   -webkit-appearance: none;
   line-height: 1.5;
+}
+
+.input::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1 !important;
 }
 
 /* Fix browser autofill background override */
