@@ -2,10 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, MessageCircle, Plus, User, LogOut } from 'lucide-react';
+import { Home, Search, MessageCircle, Plus, User, LogOut, Moon, Sun } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-export default function Sidebar({ activeTab }: { activeTab: string }) {
+export default function Sidebar({
+  activeTab,
+  onTabChange,
+  theme,
+  onToggleTheme,
+}: {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+  theme: string;
+  onToggleTheme: () => void;
+}) {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
 
@@ -17,18 +27,18 @@ export default function Sidebar({ activeTab }: { activeTab: string }) {
   ];
 
   const initials = user?.user_metadata?.full_name
-    ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').slice(0,2).toUpperCase()
+    ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
     : user?.email?.[0]?.toUpperCase() || '?';
 
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Utilisateur';
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" style={{ background: 'var(--bg-card)', borderRight: '1px solid var(--border)' }}>
       {/* Logo */}
       <div className="px-5 pt-6 pb-5">
         <div className="flex items-center gap-3">
           <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{ background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', boxShadow: '0 2px 8px rgba(91,76,245,0.3)' }}
           >
             <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
@@ -51,8 +61,13 @@ export default function Sidebar({ activeTab }: { activeTab: string }) {
             return (
               <button
                 key={id}
-                className={`sidebar-nav-item w-full ${isActive ? 'active' : ''}`}
-                style={isActive ? { background: 'var(--brand-light)', color: 'var(--brand)' } : {}}
+                onClick={() => onTabChange(id)}
+                className="sidebar-nav-item w-full"
+                style={
+                  isActive
+                    ? { background: 'var(--brand-light)', color: '#5B4CF5', fontWeight: 600 }
+                    : { color: 'var(--text-secondary)' }
+                }
               >
                 <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
                 {label}
@@ -62,17 +77,30 @@ export default function Sidebar({ activeTab }: { activeTab: string }) {
         </div>
       </nav>
 
-      {/* User + logout */}
-      <div className="px-3 pb-4 pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+      {/* Bottom section */}
+      <div className="px-3 pb-4 pt-2">
+        {/* Theme toggle */}
+        <button
+          onClick={onToggleTheme}
+          className="sidebar-nav-item w-full mb-1"
+          style={{ color: 'var(--text-secondary)' }}
+          title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+        >
+          {theme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
+          {theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+        </button>
+
+        {/* Account */}
         <Link
           href="/account"
-          className={`sidebar-nav-item w-full ${pathname === '/account' ? 'active' : ''}`}
-          style={pathname === '/account' ? { background: 'var(--brand-light)', color: 'var(--brand)' } : {}}
+          className="sidebar-nav-item w-full"
+          style={pathname === '/account' ? { background: 'var(--brand-light)', color: '#5B4CF5', fontWeight: 600 } : { color: 'var(--text-secondary)' }}
         >
           <User size={18} strokeWidth={pathname === '/account' ? 2.5 : 2} />
           Mon compte
         </Link>
 
+        {/* User info */}
         {user && (
           <div className="mt-2 px-3 py-2.5 rounded-xl" style={{ background: 'var(--bg-subtle)' }}>
             <div className="flex items-center gap-2.5">
@@ -89,8 +117,10 @@ export default function Sidebar({ activeTab }: { activeTab: string }) {
             </div>
             <button
               onClick={() => signOut()}
-              className="flex items-center gap-2 mt-2 w-full px-2 py-1.5 rounded-lg text-xs transition-colors hover:bg-white/80"
+              className="flex items-center gap-2 mt-2 w-full px-2 py-1.5 rounded-lg transition-colors text-xs"
               style={{ color: 'var(--text-secondary)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-card-hover)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               <LogOut size={14} />
               Déconnexion
@@ -99,7 +129,7 @@ export default function Sidebar({ activeTab }: { activeTab: string }) {
         )}
 
         <p className="text-center text-xs mt-3" style={{ color: 'var(--text-tertiary)' }}>
-          Covera · v0.2
+          Covera · v0.3
         </p>
       </div>
     </aside>

@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+/* ─── DARK MODE ──────────────────────────────────────────── */
+.dark {
+  --bg-base: #0F1117;
+  --bg-card: #1A1D27;
+  --bg-subtle: #141620;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-tertiary: #64748B;
+  --brand-light: rgba(91, 76, 245, 0.2);
+  --brand-text: #A5B4FC;
+  --emerald-light: rgba(16, 185, 129, 0.15);
+  --emerald-text: #6EE7B7;
+  --amber-light: rgba(245, 158, 11, 0.15);
+  --amber-text: #FCD34D;
+  --rose-light: rgba(239, 68, 68, 0.15);
+  --rose-text: #FCA5A5;
+  --bg-card-hover: #20243A;
+}
+
 :root {
   /* Premium neobank palette */
   --bg-base: #FAFBFC;
