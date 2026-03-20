@@ -455,14 +455,10 @@ body {
 }
 
 /* ─── RESPONSIVE SIDEBAR ─────────────────────────────────── */
-/* Desktop sidebar (full, 240px) */
-.desktop-sidebar-wrap { display: none; }
+.desktop-sidebar-wrap { display: none !important; width: 240px; flex-shrink: 0; }
+.mobile-sidebar-wrap { display: flex !important; flex-shrink: 0; }
+
 @media (min-width: 1024px) {
-  .desktop-sidebar-wrap { display: flex; flex-shrink: 0; width: 240px; }
+  .desktop-sidebar-wrap { display: flex !important; }
   .mobile-sidebar-wrap { display: none !important; }
-}
-/* Mobile sidebar (icon-only, 72px) */
-@media (max-width: 1023px) {
-  .mobile-sidebar-wrap { display: flex; flex-shrink: 0; }
-  .desktop-sidebar-wrap { display: none !important; }
 }
