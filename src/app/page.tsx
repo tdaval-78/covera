@@ -189,13 +189,21 @@ export default function Home() {
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-base)' }}>
-      <div style={{ display: 'none' }} className="lg:block">
+      {/* Desktop sidebar */}
+      <div style={{ display: 'none', flexShrink: 0 }} className="sidebar-desktop">
         <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
       </div>
-      <main style={{ flex: 1, overflow: 'auto' }}>
+      {/* Mobile left nav */}
+      <MobileNav activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
+      <style>{`
+        @media (min-width: 1024px) {
+          .sidebar-desktop { display: flex !important; flex-shrink: 0; }
+        }
+      `}</style>
+      {/* Main content */}
+      <main style={{ flex: 1, overflow: 'auto', minWidth: 0 }}>
         {renderTab()}
       </main>
-      <MobileNav activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
     </div>
   );
 }
