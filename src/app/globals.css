@@ -76,6 +76,10 @@
   --color-foreground: var(--text-primary);
   --font-sans: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", -apple-system, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
 }
 
 /* ─── RESET & BASE ─────────────────────────────────────── */
