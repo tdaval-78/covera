@@ -25,7 +25,7 @@ export default function Sidebar({ activeTab, onTabChange, theme, onToggleTheme }
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Utilisateur';
 
   return (
-    <aside style={{ width: 240, flexShrink: 0, height: '100vh', display: 'flex', flexDirection: 'column', padding: '20px 16px', background: 'var(--bg-card)', borderRight: '1px solid var(--border)', position: 'sticky', top: 0 }}>
+    <aside style={{ width: 240, flexShrink: 0, height: '100%', display: 'flex', flexDirection: 'column', padding: '20px 16px', background: 'var(--bg-card)', borderRight: '1px solid var(--border)' }}>
       {/* Logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
         <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #5B4CF5, #7C5CF5)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(91,76,245,0.3)', flexShrink: 0 }}>
