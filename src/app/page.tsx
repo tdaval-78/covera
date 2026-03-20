@@ -190,21 +190,13 @@ export default function Home() {
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-base)' }}>
       {/* Desktop sidebar — lg+ only */}
-      <div className="desktop-sidebar">
+      <div className="desktop-sidebar-wrap">
         <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
       </div>
-      {/* Mobile left nav — hidden on lg */}
-      <div className="mobile-sidebar">
+      {/* Mobile left nav — mobile only */}
+      <div className="mobile-sidebar-wrap">
         <MobileNav activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
       </div>
-      <style>{`
-        .desktop-sidebar { display: none; width: 240px; flex-shrink: 0; height: 100vh; position: sticky; top: 0; }
-        .mobile-sidebar { display: flex; flex-shrink: 0; }
-        @media (min-width: 1024px) {
-          .desktop-sidebar { display: flex; }
-          .mobile-sidebar { display: none; }
-        }
-      `}</style>
       {/* Main content */}
       <main style={{ flex: 1, overflow: 'auto', minWidth: 0 }}>
         {renderTab()}
