@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -128,6 +128,17 @@ function useContracts(userId: string | undefined) {
 
 type Tab = 'situation' | 'details' | 'chat' | 'add';
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return isDesktop;
+}
+
 export default function Home() {
   const { user, loading } = useAuth();
   const { theme, toggle } = useTheme();
@@ -135,6 +146,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('situation');
   const [selectedContract, setSelectedContract] = useState<InsuranceContract | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const isDesktop = useIsDesktop();
 
   const { contracts, loading: contractsLoading, addContract, deleteContract } = useContracts(user?.id);
 
@@ -189,14 +201,16 @@ export default function Home() {
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-base)' }}>
-      {/* Desktop sidebar — lg+ only */}
-      <div className="desktop-sidebar-wrap">
-        <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
-      </div>
-      {/* Mobile left nav — mobile only */}
-      <div className="mobile-sidebar-wrap">
+      {/* Desktop sidebar — shown only on lg+ */}
+      {isDesktop && (
+        <div style={{ width: 240, flexShrink: 0, height: '100vh', position: 'sticky', top: 0 }}>
+          <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
+        </div>
+      )}
+      {/* Mobile left sidebar — shown only on mobile */}
+      {!isDesktop && (
         <MobileNav activeTab={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} theme={theme} onToggleTheme={toggle} />
-      </div>
+      )}
       {/* Main content */}
       <main style={{ flex: 1, overflow: 'auto', minWidth: 0 }}>
         {renderTab()}
